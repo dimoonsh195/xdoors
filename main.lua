@@ -48,12 +48,11 @@ local Objects = {
 	SeekNodes = {},
 	SeekDuckBoards = {},
 	SeekBridges = {},
-	PathLights = {}
+	PathLights = {},
+	HonchoBoxes = {}
 }
 
 Globals.IncompatibleMessage = "Your executor doesn't support this feature."
-Globals._AutoSpoofTriggered = false
-Globals._AutoSpoofWasManual = false
 
 Functions.CheckCompatability = function(Array)
 	for _, Name in Array do
@@ -140,6 +139,10 @@ local Entities = {
 	["Scribbles"] = {
 		Alias = "Scribbles",
 		NotifyMessage = { Title = "Entity 'Scribbles' has spawned.", Body = "Find a hiding spot." }
+	},
+	["Drones"] = {
+		Alias = "Drones",
+		NotifyMessage = { Title = "Entity 'Drones' has spawned.", Body = "Watch out." }
 	}
 }
 
@@ -161,7 +164,8 @@ local EntityIcons = {
 	["MonumentEntity"]  = "rbxassetid://88933556873017",
 	["Groundskeeper"]   = "rbxassetid://114991380115557",
 	["BashMoving"]      = "rbxassetid://10110576663",
-	["Scribbles"]       = "rbxassetid://10110576663"
+	["Scribbles"]       = "rbxassetid://10110576663",
+	["Drones"]          = "rbxassetid://10110576663"
 }
 
 local ItemNames = {
@@ -221,7 +225,17 @@ local ItemNames = {
 	["AloeVera"]          = "Aloe Vera",
 	["Donut"]             = "Donut",
 	["Lotus"]             = "Lotus",
-	["BoxingGloves"]      = "Boxing Gloves"
+	["BoxingGloves"]      = "Boxing Gloves",
+	["BottleCrate"]       = "Bottle Crate",
+	["DinkyLamp"]         = "Dinky Lamp",
+	["LargeScrew"]        = "Large Screw",
+	["JerryCan"]          = "Jerry Can",
+	["AbrahamHat"]        = "Abraham Hat",
+	["CoinRoll"]          = "Coin Roll",
+	["KeyGarage"]         = "Garage Key",
+	["KeyJewelry"]        = "Jewelry Key",
+	["ObjectScanner"]     = "Object Scanner",
+	["Pizza"]             = "Pizza"
 }
 
 local CutsceneNames = {
@@ -773,6 +787,7 @@ local EntityDistances = {
 	["CustomEntity"]  = 85,
 	["BashMoving"]    = 100,
 	["Scribbles"]     = 100,
+	["Drones"]        = 100
 }
 
 Functions.GetNearestEntity = function(CheckDisabled, List, UseRaycasting)
@@ -1037,14 +1052,20 @@ local Window = Library:CreateWindow({
 	CornerRadius = 2,
 })
 
-Abysall.Interface.ApplyInfoTab(Window)
-
 local Tabs = {
 	General  = Window:AddTab("General", "house"),
 	Exploits = Window:AddTab("Exploits", "shield"),
 	Visuals  = Window:AddTab("Visuals", "eye"),
 	Floors   = Window:AddTab("Floors", "earth"),
+	Info     = Window:AddTab("Info", "info"),
 }
+
+Groupboxes.Info_Updates = Tabs.Info:AddLeftGroupbox("Updates")
+Groupboxes.Info_Updates:AddButton({
+	Text = "30.10.2026\n- Archives support\n- Stairwell support",
+	DoubleClick = false,
+	Func = function() end
+})
 
 Groupboxes.General_Character = Tabs.General:AddLeftGroupbox("Character")
 Groupboxes.General_Character:AddSlider("SpeedBoostSlider", {
@@ -1241,11 +1262,6 @@ Groupboxes.Self_Automation:AddDropdown("SpecateEntityMode", {
 })
 
 Groupboxes.Self_Misc = Tabs.General:AddRightGroupbox("Miscellaneous")
-Groupboxes.Self_Misc:AddButton({
-	Text = "script on abysallhub base",
-	DoubleClick = false,
-	Func = function() end
-})
 Groupboxes.Self_Misc:AddButton({
 	Text = "Play Again", Tooltip = "Makes you join a new run, click again to cancel.", DoubleClick = true,
 	Func = function() RemotesFolder.PlayAgain:FireServer() end
@@ -1721,7 +1737,7 @@ Groupboxes.Visuals_EntitySettings = Groupboxes.Visuals_RightTab:AddTab("Settings
 
 Groupboxes.Visuals_Entities:AddDropdown("EntityList", {
 	Text = "Entity List",
-	Values = { "Rush","Ambush","Eyes","Halt","Blitz","Lookman","Gloombat Swarm","A-60","A-120","Sally","Jeff the Killer","Groundskeeper","Monument","AR0xMBUSH","RNIUSHCG==", "Bash", "Scribbles" },
+	Values = { "Rush","Ambush","Eyes","Halt","Blitz","Lookman","Gloombat Swarm","A-60","A-120","Sally","Jeff the Killer","Groundskeeper","Monument","AR0xMBUSH","RNIUSHCG==", "Bash", "Scribbles", "Drones" },
 	Multi = true, AllowNull = true
 })
 Groupboxes.Visuals_Entities:AddToggle("NotifyEntities",    { Text = "Notify Entities",    Default = false, Tooltip = "Sends a notification when an entity spawns." })
@@ -1811,6 +1827,9 @@ local ObjectiveLabels = {
 	["LeverForGate"]           = "Gate Lever",
 	["MinesGateButton"]        = "Gate Button",
 	["GardenGateButton"]       = "Gate Button",
+	["StairwellScrapper"]      = "Recycler",
+	["StairwellFireAlarm"]     = "Firealarm",
+	["ArchivesWaterCooler"]    = "Watercooler",
 	["TV_Stand"]               = "Noise spawn",
 }
 
@@ -1841,6 +1860,41 @@ Options.ObjectiveESPColor:OnChanged(function(Value)
 	end
 end)
 
+Groupboxes.Visuals_ESP_Toggles:AddToggle("HonchoBoxesToggle", { Text = "Honchoboxes", Default = false, Tooltip = "Highlights Archives Storage Boxes and shows their labels." })
+Toggles.HonchoBoxesToggle:AddColorPicker("HonchoBoxesESPColor", { Text = "Honchoboxes", Default = Color3.fromRGB(255, 165, 0), Transparency = 0 })
+
+local function UpdateHonchoBoxESP(Object)
+    if Toggles.HonchoBoxesToggle.Value then
+        local Label = Object:FindFirstChild("Meshes", true) and Object.Meshes:FindFirstChild("Box", true) and Object.Meshes.Box:FindFirstChild("Number", true) and Object.Meshes.Box.Number:FindFirstChild("Text", true) and Object.Meshes.Box.Number.Text:FindFirstChild("Label", true)
+        local LabelText = Label and Label.Text or "Box"
+        
+        Functions.RemoveESP(Object)
+        Functions.AddESP({ Object = Object, Text = LabelText, Color = Options.HonchoBoxesESPColor.Value }, true)
+        
+        if Label then
+            Label:GetPropertyChangedSignal("Text"):Connect(function()
+                if Toggles.HonchoBoxesToggle.Value then
+                    Functions.RemoveESP(Object)
+                    Functions.AddESP({ Object = Object, Text = Label.Text, Color = Options.HonchoBoxesESPColor.Value }, true)
+                end
+            end)
+        end
+    else
+        Functions.RemoveESP(Object)
+    end
+end
+
+Toggles.HonchoBoxesToggle:OnChanged(function(Value)
+    for _, Object in Objects.HonchoBoxes do
+        UpdateHonchoBoxESP(Object)
+    end
+end)
+Options.HonchoBoxesESPColor:OnChanged(function(Value)
+    for _, Object in Objects.HonchoBoxes do
+        Abysall.ESPLibrary:UpdateObjectColor(Object, Value)
+    end
+end)
+
 Groupboxes.Visuals_ESP_Toggles:AddToggle("DoorESPToggle",       { Text = "Doors",        Default = false, Tooltip = "Highlights the next door." })
 Groupboxes.Visuals_ESP_Toggles:AddToggle("HidingSpotESPToggle", { Text = "Hiding Spots", Default = false, Tooltip = "Highlights places where you can hide from entities" })
 Groupboxes.Visuals_ESP_Toggles:AddToggle("PlayerESPToggle",     { Text = "Players",      Default = false, Tooltip = "Highlights other players." })
@@ -1851,7 +1905,7 @@ Groupboxes.Visuals_ESP_Toggles:AddToggle("LadderESPToggle",     { Text = "Ladder
 Groupboxes.Visuals_ESP_Toggles:AddDivider()
 Groupboxes.Visuals_ESP_Toggles:AddDropdown("EntityESPOptions",     { 
 	Text = "Entity List",
-	Values = { "Rush","Ambush","Eyes","Dupe","Figure","Blitz","Lookman","Snare","Giggle","Gloombat Eggs","Grumble","A-60","A-120","Sally","Jeff the Killer","Groundskeeper","Mandrake Hole","Monument","Bramble","AR0xMBUSH","RNIUSHCG==", "Bash", "Scribbles" },
+	Values = { "Rush","Ambush","Eyes","Dupe","Figure","Blitz","Lookman","Snare","Giggle","Gloombat Eggs","Grumble","A-60","A-120","Sally","Jeff the Killer","Groundskeeper","Mandrake Hole","Monument","Bramble","AR0xMBUSH","RNIUSHCG==", "Bash", "Scribbles", "Drones" },
 	Multi = true,
 	AllowNull = true
 })
@@ -1870,7 +1924,8 @@ local HidingSpotLabels = {
 	Wardrobe = "Closet", ["Backdoor_Wardrobe"] = "Closet", Toolshed = "Closet",
 	RetroWardrobe = "Closet", ["Wardrobe-FOOLS26"] = "Closet",
 	Locker_Large = "Locker", Rooms_Locker = "Locker", Rooms_Locker_Fridge = "Locker",
-	Bed = "Bed", Double_Bed = "Double Bed", CircularVent = "Vent", Dumpster = "Dumpster"
+	Bed = "Bed", Double_Bed = "Double Bed", CircularVent = "Vent", Dumpster = "Dumpster",
+	HidingSpot1 = "Closet"
 }
 local ChestLabels = {
 	ChestBox = true, ChestBoxLocked = true, Toolbox = true, Toolbox_Locked = true,
@@ -3035,21 +3090,6 @@ Functions.HandleCharacter = function(NewCharacter)
 		Globals.IsEyes    = Services.Workspace:FindFirstChild("Eyes") ~= nil or Services.Workspace:FindFirstChild("Lookman") ~= nil
 		Globals.IsLookman = Services.Workspace:FindFirstChild("BackdoorLookman") ~= nil
 
-		-- XDOORS: auto position spoof on Bash or Scribbles
-		local isBashOrScribbles = Services.Workspace:FindFirstChild("BashMoving") ~= nil or Services.Workspace:FindFirstChild("Scribbles") ~= nil
-		if isBashOrScribbles and not Globals._AutoSpoofTriggered then
-			Globals._AutoSpoofTriggered = true
-			Globals._AutoSpoofWasManual = Toggles.PositionSpoof.Value
-			if not Toggles.PositionSpoof.Value then
-				Toggles.PositionSpoof:SetValue(true)
-			end
-		elseif not isBashOrScribbles and Globals._AutoSpoofTriggered then
-			Globals._AutoSpoofTriggered = false
-			if not Globals._AutoSpoofWasManual then
-				Toggles.PositionSpoof:SetValue(false)
-			end
-		end
-
 		if Toggles.AmbientToggle.Value then
 			Services.TweenService:Create(Services.Lighting, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), { Ambient = Options.AmbientColor.Value }):Play()
 		end
@@ -3372,6 +3412,15 @@ Functions.HandleObject = function(Object)
 	elseif Name == "TV_Stand" then
 		if Toggles.ObjectiveESPToggle.Value then Functions.AddESP({ Object = Object, Text = "Noise spawn", Color = Options.ObjectiveESPColor.Value }, true) end
 		table.insert(Objects.Objectives, Object)
+	elseif Name == "StairwellScrapper" then
+		if Toggles.ObjectiveESPToggle.Value then Functions.AddESP({ Object = Object, Text = "Recycler", Color = Options.ObjectiveESPColor.Value }, true) end
+		table.insert(Objects.Objectives, Object)
+	elseif Name == "StairwellFireAlarm" then
+		if Toggles.ObjectiveESPToggle.Value then Functions.AddESP({ Object = Object, Text = "Firealarm", Color = Options.ObjectiveESPColor.Value }, true) end
+		table.insert(Objects.Objectives, Object)
+	elseif Name == "ArchivesWaterCooler" then
+		if Toggles.ObjectiveESPToggle.Value then Functions.AddESP({ Object = Object, Text = "Watercooler", Color = Options.ObjectiveESPColor.Value }, true) end
+		table.insert(Objects.Objectives, Object)
 	elseif Name == "CringlePresent" then
 		if Toggles.ObjectiveESPToggle.Value then Functions.AddESP({ Object = Object, Text = "Present", Color = Options.ObjectiveESPColor.Value }, true) end
 		Object:WaitForChild("ToolProp").Highlight:Destroy()
@@ -3629,6 +3678,9 @@ Functions.HandleObject = function(Object)
 		Object.Name = "_EyestalkEndCutscene"
 	elseif Name == "DuckBoard" then
 		table.insert(Objects.SeekDuckBoards, Object)
+	elseif Name == "ArchivesStorageBox" then
+		table.insert(Objects.HonchoBoxes, Object)
+		UpdateHonchoBoxESP(Object)
 	elseif HidingSpotLabels[Name] then
 		if Toggles.HidingSpotESPToggle.Value then Functions.AddESP({ Object = Object, Text = HidingSpotLabels[Name], Color = Options.HidingSpotESPColor.Value }, true) end
 		Functions.HandleHidingTransparency(Object)
@@ -4036,7 +4088,8 @@ local AllowedInstances = {
 	GardenGateButton=true, LotusPetalPickup=true, VineGuillotine=true, LiveEntityBramble=true,
 	RiftSpawn=true, ElevatorBreaker=true, RunnerNodes=true, PathLights=true, DuckBoard=true,
 	Padlock=true, EyestalkEndCutscene=true, MinecartRig=true, SeekMovingNewClone=true,
-	TV_Stand=true
+	TV_Stand=true, StairwellScrapper=true, StairwellFireAlarm=true, ArchivesWaterCooler=true,
+	ArchivesStorageBox=true, HidingSpot1=true
 }
 
 Functions.QueueObject = function(Object)
@@ -4399,7 +4452,7 @@ Connections.FogHandler2 = Services.Lighting.DescendantAdded:Connect(function(Obj
 	table.insert(Globals.FogInstances, Object)
 end)
 
-local RusherAliases = { Rush=true, Ambush=true, Eyes=true, Lookman=true, Blitz=true, ["A-60"]=true, ["A-120"]=true, AR0xMBUSH=true, ["RNIUSHCG=="]=true, ["Custom Entity"]=true, Bash=true, Scribbles=true }
+local RusherAliases = { Rush=true, Ambush=true, Eyes=true, Lookman=true, Blitz=true, ["A-60"]=true, ["A-120"]=true, AR0xMBUSH=true, ["RNIUSHCG=="]=true, ["Custom Entity"]=true, Bash=true, Scribbles=true, Drones=true }
 
 Connections.EntityHandler = Services.Workspace.ChildAdded:Connect(function(Entity)
 	local EntityData = Entities[Entity.Name]
