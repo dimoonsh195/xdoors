@@ -1,3 +1,10 @@
+-- ============================================================
+-- ⚠️ СКРЫТЫЕ КОДЫ (НИКОГДА НЕ ОТОБРАЖАТЬ В UI/ЛОГАХ/ТУЛТИПАХ!):
+--   "unlockexecutorfeatures"   - снимает Disabled-ограничения с функций
+--   "defaultexecutorfeatures"  - возвращает ограничения обратно
+--   "console" / "xconsole"     - открывает консоль
+--   На неверный ввод — ТИХО игнорировать (никаких "Invalid code")
+-- ============================================================
 local LoadStart = tick()
 Abysall.SavePath = "Doors/Game"
 
@@ -130,73 +137,30 @@ local EntityIcons = {
 }
 
 local ItemNames = {
-	["Lighter"]           = "Lighter",
-	["Flashlight"]        = "Flashlight",
-	["Lockpick"]          = "Lockpicks",
-	["Vitamins"]          = "Vitamins",
-	["Bandage"]           = "Bandage",
-	["StarVial"]          = "Starlight Vial",
-	["StarBottle"]        = "Starlight Bottle",
-	["StarJug"]           = "Starlight Barrel",
-	["Shakelight"]        = "Gummy Flashlight",
-	["Straplight"]        = "Straplight",
-	["Bulklight"]         = "Spotlight",
-	["Battery"]           = "Battery",
-	["Candle"]            = "Candle",
-	["Crucifix"]          = "Crucifix",
-	["CrucifixWall"]      = "Crucifix",
-	["Glowsticks"]        = "Glowstick",
-	["SkeletonKey"]       = "Skeleton Key",
-	["Candy"]             = "Candy",
-	["ShieldMini"]        = "Mini Shield Potion",
-	["ShieldBig"]         = "Big Shield Potion",
-	["BandagePack"]       = "Bandage Pack",
-	["BatteryPack"]       = "Battery Pack",
-	["RiftCandle"]        = "Moonlight Candle",
-	["LaserPointer"]      = "Laser Pointer",
-	["HolyGrenade"]       = "Holy Hand Grenade",
-	["Shears"]            = "Shears",
-	["Smoothie"]          = "Smoothie",
-	["Cheese"]            = "Cheese",
-	["Bread"]             = "Bread",
-	["AlarmClock"]        = "Alarm Clock",
-	["RiftSmoothie"]      = "Moonlight Smoothie",
-	["GweenSoda"]         = "Gween Soda",
-	["GlitchCube"]        = "Glitch Fragment",
-	["Scanner"]           = "Tablet",
-	["Bomb"]              = "Bomb",
-	["Knockbomb"]         = "Knockbomb",
-	["Nanner"]            = "Nanner",
-	["BigBomb"]           = "Big Bomb",
-	["SnakeBox"]          = "Hiding Box",
-	["GoldGun"]           = "Golden Gun",
-	["StopSign"]          = "Stop Sign",
-	["TipJar"]            = "Tip Jar",
-	["Lantern"]           = "Lantern",
-	["IronKey"]           = "Iron Key",
-	["LotusPetal"]        = "Lotus Petal",
-	["Compass"]           = "Compass",
-	["LotusPetalPickup"]  = "Lotus Petal",
-	["LanternLitItem"]    = "Lantern",
-	["KeyIron"]           = "Iron Key",
-	["IronKeyForCrypt"]   = "Iron Key",
-	["LotusHolder"]       = "Lotus Petal",
-	["Multitool"]         = "Multitool",
-	["RiftJar"]           = "Rift Jar",
-	["AloeVera"]          = "Aloe Vera",
-	["Donut"]             = "Donut",
-	["Lotus"]             = "Lotus",
-	["BoxingGloves"]      = "Boxing Gloves",
-	["BottleCrate"]       = "Bottle Crate",
-	["DinkyLamp"]         = "Dinky Lamp",
-	["LargeScrew"]        = "Large Screw",
-	["JerryCan"]          = "Jerry Can",
-	["AbrahamHat"]        = "Abraham Hat",
-	["CoinRoll"]          = "Coin Roll",
-	["KeyGarage"]         = "Garage Key",
-	["KeyJewelry"]        = "Jewelry Key",
-	["ObjectScanner"]     = "Object Scanner",
-	["Pizza"]             = "Pizza"
+	["Lighter"] = "Lighter", ["Flashlight"] = "Flashlight", ["Lockpick"] = "Lockpicks",
+	["Vitamins"] = "Vitamins", ["Bandage"] = "Bandage", ["StarVial"] = "Starlight Vial",
+	["StarBottle"] = "Starlight Bottle", ["StarJug"] = "Starlight Barrel",
+	["Shakelight"] = "Gummy Flashlight", ["Straplight"] = "Straplight",
+	["Bulklight"] = "Spotlight", ["Battery"] = "Battery", ["Candle"] = "Candle",
+	["Crucifix"] = "Crucifix", ["CrucifixWall"] = "Crucifix", ["Glowsticks"] = "Glowstick",
+	["SkeletonKey"] = "Skeleton Key", ["Candy"] = "Candy", ["ShieldMini"] = "Mini Shield Potion",
+	["ShieldBig"] = "Big Shield Potion", ["BandagePack"] = "Bandage Pack",
+	["BatteryPack"] = "Battery Pack", ["RiftCandle"] = "Moonlight Candle",
+	["LaserPointer"] = "Laser Pointer", ["HolyGrenade"] = "Holy Hand Grenade",
+	["Shears"] = "Shears", ["Smoothie"] = "Smoothie", ["Cheese"] = "Cheese",
+	["Bread"] = "Bread", ["AlarmClock"] = "Alarm Clock", ["RiftSmoothie"] = "Moonlight Smoothie",
+	["GweenSoda"] = "Gween Soda", ["GlitchCube"] = "Glitch Fragment", ["Scanner"] = "Tablet",
+	["Bomb"] = "Bomb", ["Knockbomb"] = "Knockbomb", ["Nanner"] = "Nanner", ["BigBomb"] = "Big Bomb",
+	["SnakeBox"] = "Hiding Box", ["GoldGun"] = "Golden Gun", ["StopSign"] = "Stop Sign",
+	["TipJar"] = "Tip Jar", ["Lantern"] = "Lantern", ["IronKey"] = "Iron Key",
+	["LotusPetal"] = "Lotus Petal", ["Compass"] = "Compass", ["LotusPetalPickup"] = "Lotus Petal",
+	["LanternLitItem"] = "Lantern", ["KeyIron"] = "Iron Key", ["IronKeyForCrypt"] = "Iron Key",
+	["LotusHolder"] = "Lotus Petal", ["Multitool"] = "Multitool", ["RiftJar"] = "Rift Jar",
+	["AloeVera"] = "Aloe Vera", ["Donut"] = "Donut", ["Lotus"] = "Lotus",
+	["BoxingGloves"] = "Boxing Gloves", ["BottleCrate"] = "Bottle Crate", ["DinkyLamp"] = "Dinky Lamp",
+	["LargeScrew"] = "Large Screw", ["JerryCan"] = "Jerry Can", ["AbrahamHat"] = "Abraham Hat",
+	["CoinRoll"] = "Coin Roll", ["KeyGarage"] = "Garage Key", ["KeyJewelry"] = "Jewelry Key",
+	["ObjectScanner"] = "Object Scanner", ["Pizza"] = "Pizza"
 }
 
 local CutsceneNames = {
@@ -282,7 +246,6 @@ function NotificationLibrary:Notify(TitleText, Desc, Delay, NotifyType)
 
 		UICorner.CornerRadius = UDim.new(0, 20 * sizeMult)
 		UICorner.Parent = Warning
-
 		UICorner2.CornerRadius = UDim.new(0, 4 * sizeMult)
 		UICorner2.Parent = Notification
 
@@ -315,8 +278,7 @@ function NotificationLibrary:Notify(TitleText, Desc, Delay, NotifyType)
 		Services.TweenService:Create(Notification, TweenInfo.new(1, Enum.EasingStyle.Exponential), { Position = UDim2.new(1, -370 * sizeMult, 0, Notification.Position.Y.Offset) }):Play()
 
 		task.wait(0.25)
-		if typeof(Delay) == "Instance" then
-			Delay.Destroying:Wait()
+		if typeof(Delay) == "Instance" then Delay.Destroying:Wait()
 		else
 			if not isWarn and Line then
 				Services.TweenService:Create(Line, TweenInfo.new(Delay - 0.25, Enum.EasingStyle.Linear), { Size = UDim2.new(0, 400 * sizeMult, 0, 3) }):Play()
@@ -349,7 +311,6 @@ Globals.DoorsNotify = function(NotifyOptions)
 		Sound.Parent = Parent
 		task.spawn(function() task.wait(0.1) Sound:Play() Sound.Ended:Wait() Sound:Destroy() end)
 	end
-
 	local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 	local UIContainer = PlayerGui:FindFirstChild("GlobalUI") or PlayerGui:FindFirstChild("MainUI")
 	if not UIContainer then return end
@@ -361,13 +322,11 @@ Globals.DoorsNotify = function(NotifyOptions)
 	Achievement.Frame.Position = UDim2.new(1.1, 0, 0, 0)
 	Achievement.Name = "LiveAchievement"
 	Achievement.Visible = true
-
 	Achievement.Frame.TextLabel.Text = NotifyOptions.Style or "NOTIFICATION"
 	Achievement.Frame.Details.Title.Text = NotifyOptions.Title or "Sem Título"
 	Achievement.Frame.Details.Desc.Text = NotifyOptions.Description or "Sem Descrição"
 	Achievement.Frame.Details.Reason.Text = NotifyOptions.Reason or ""
 	Achievement.Frame.ImageLabel.Image = (NotifyOptions.Image ~= "" and NotifyOptions.Image) or "rbxassetid://6023426923"
-
 	local Color = NotifyOptions.Color or Color3.new(1, 1, 1)
 	Achievement.Frame.TextLabel.TextColor3 = Color
 	Achievement.Frame.UIStroke.Color = Color
@@ -392,69 +351,48 @@ end
 Globals.STX = loadstring(game:HttpGet("https://raw.githubusercontent.com/bocaj111004/Abysall/refs/heads/main/Components/STX.luau"))()
 Functions.Notify = function(Settings)
 	local HiddenContainer = GetHiddenContainer()
-
 	if not Settings.Body then Settings.Body = "..." end
 
 	if not Options.NotifyStyle or Options.NotifyStyle.Value == "XDOORS" then
-		local Sound = Instance.new("Sound", HiddenContainer)
-		Sound.SoundId = "rbxassetid://8784885431"
+		local Sound = Instance.new("Sound", HiddenContainer); Sound.SoundId = "rbxassetid://8784885431"
 		Sound.Volume = (Toggles.NotifyPlaySound and Toggles.NotifyPlaySound.Value and Options.NotifySoundVolume.Value) or (Toggles.NotifyPlaySound and 0 or 3)
-		Sound.PlayOnRemove = true
-		Sound:Destroy()
+		Sound.PlayOnRemove = true; Sound:Destroy()
 		NotificationLibrary:Notify(Settings.Title, Settings.Body, Settings.Time or 5)
 	elseif Options.NotifyStyle.Value == "Progress detected" then
-		local Sound = Instance.new("Sound", HiddenContainer)
-		Sound.SoundId = "rbxassetid://139831545578826"
+		local Sound = Instance.new("Sound", HiddenContainer); Sound.SoundId = "rbxassetid://139831545578826"
 		Sound.Volume = (Toggles.NotifyPlaySound and Toggles.NotifyPlaySound.Value and Options.NotifySoundVolume.Value) or (Toggles.NotifyPlaySound and 0 or 3)
-		Sound.PlayOnRemove = true
-		Sound:Destroy()
+		Sound.PlayOnRemove = true; Sound:Destroy()
 		NotificationLibrary:Notify(Settings.Title, Settings.Body, Settings.Time or 5, "Progress detected")
 	elseif Options.NotifyStyle.Value == "Warn" then
-		local Sound = Instance.new("Sound", HiddenContainer)
-		Sound.SoundId = "rbxassetid://107089652181213"
+		local Sound = Instance.new("Sound", HiddenContainer); Sound.SoundId = "rbxassetid://107089652181213"
 		Sound.Volume = (Toggles.NotifyPlaySound and Toggles.NotifyPlaySound.Value and Options.NotifySoundVolume.Value) or (Toggles.NotifyPlaySound and 0 or 3)
-		Sound.PlayOnRemove = true
-		Sound:Destroy()
+		Sound.PlayOnRemove = true; Sound:Destroy()
 		NotificationLibrary:Notify(Settings.Title, Settings.Body, Settings.Time or 5, "Warn")
 	elseif Options.NotifyStyle.Value == "Doors" then
 		local IsEntity = false
 		for _, Object in pairs(Entities) do
 			if Object.NotifyMessage.Title == Settings.Title or Object.NotifyMessage.Body == Settings.Body then IsEntity = true end
 		end
-		Globals.DoorsNotify({
-			Title = "XDOORS",
-			Description = Settings.Title,
-			Reason = Settings.Body,
+		Globals.DoorsNotify({Title = "XDOORS", Description = Settings.Title, Reason = Settings.Body,
 			Style = IsEntity and "WARNING" or "NOTIFICATION",
 			Color = IsEntity and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(255, 222, 189),
-			Image = Settings.Image,
-			Time = Settings.Time
-		})
+			Image = Settings.Image, Time = Settings.Time})
 	elseif Options.NotifyStyle.Value == "STX" then
-		local Sound = Instance.new("Sound", HiddenContainer)
-		Sound.SoundId = "rbxassetid://4590657391"
+		local Sound = Instance.new("Sound", HiddenContainer); Sound.SoundId = "rbxassetid://4590657391"
 		Sound.Volume = (Toggles.NotifyPlaySound and Toggles.NotifyPlaySound.Value and Options.NotifySoundVolume.Value) or (Toggles.NotifyPlaySound and 0 or 3)
-		Sound.PlayOnRemove = true
-		Sound:Destroy()
-
+		Sound.PlayOnRemove = true; Sound:Destroy()
 		if Settings.Image then
-			Globals.STX:Notify(
-				{Title = "XDOORS", Description = Settings.Title .. "\n" .. Settings.Body},
+			Globals.STX:Notify({Title = "XDOORS", Description = Settings.Title .. "\n" .. Settings.Body},
 				{OutlineColor = Library.Scheme.AccentColor,Time = Settings.Time or 5, Type = "image"},
-				{Image = Settings.Image, ImageColor = Color3.fromRGB(255, 255, 255)}
-			)
+				{Image = Settings.Image, ImageColor = Color3.fromRGB(255, 255, 255)})
 		else
-			Globals.STX:Notify(
-				{Title = "XDOORS", Description = Settings.Title .. "\n" .. Settings.Body},
-				{OutlineColor = Library.Scheme.AccentColor,Time = Settings.Time or 5, Type = "default"}
-			)
+			Globals.STX:Notify({Title = "XDOORS", Description = Settings.Title .. "\n" .. Settings.Body},
+				{OutlineColor = Library.Scheme.AccentColor,Time = Settings.Time or 5, Type = "default"})
 		end
 	else
-		local Sound = Instance.new("Sound", HiddenContainer)
-		Sound.SoundId = "rbxassetid://4590662766"
+		local Sound = Instance.new("Sound", HiddenContainer); Sound.SoundId = "rbxassetid://4590662766"
 		Sound.Volume = (Toggles.NotifyPlaySound and Toggles.NotifyPlaySound.Value and Options.NotifySoundVolume.Value) or (Toggles.NotifyPlaySound and 0 or 3)
-		Sound.PlayOnRemove = true
-		Sound:Destroy()
+		Sound.PlayOnRemove = true; Sound:Destroy()
 		Library:OldNotify({ Title = Settings.Title, Description = Settings.Body, Time = Settings.Time })
 	end
 end
@@ -465,24 +403,12 @@ Functions.Caption = function(Text, PlaySound)
 	local Caption = Globals.MainUI:WaitForChild("MainFrame"):WaitForChild("Caption"):Clone()
 	local CaptionSound = Globals.MainUI:WaitForChild("Initiator"):WaitForChild("Main_Game"):WaitForChild("Reminder"):WaitForChild("Caption")
 	local CaptionSoundClone = CaptionSound:Clone()
-	CaptionSoundClone.Parent = CaptionSound.Parent
-	CaptionSoundClone.Volume = 0.1
-
+	CaptionSoundClone.Parent = CaptionSound.Parent; CaptionSoundClone.Volume = 0.1
 	Caption.Destroying:Connect(function() CaptionValue:Destroy() end)
-
-	for _, Child in Globals.MainUI:GetChildren() do
-		if Child.Name == "LiveCaption" then Child:Destroy() end
-	end
-
-	Caption.Parent = Globals.MainUI
-	Caption.Visible = true
-	Caption.Name = "LiveCaption"
-	Caption.Text = Text
-
+	for _, Child in Globals.MainUI:GetChildren() do if Child.Name == "LiveCaption" then Child:Destroy() end end
+	Caption.Parent = Globals.MainUI; Caption.Visible = true; Caption.Name = "LiveCaption"; Caption.Text = Text
 	if PlaySound then CaptionSoundClone:Play() end
-
 	Services.Debris:AddItem(CaptionSoundClone, 5)
-
 	local HolderTween = Services.TweenService:Create(CaptionValue, TweenInfo.new(3), { Value = 100 })
 	HolderTween:Play()
 	HolderTween.Completed:Connect(function()
@@ -523,11 +449,8 @@ local FakeEvents = {
 	Screech = Instance.new("RemoteEvent"), Shade = Instance.new("RemoteEvent"),
 	A90 = Instance.new("RemoteEvent"), Surge = Instance.new("RemoteEvent"),
 }
-FakeEvents.Screech.Name  = "Screech"
-FakeEvents.Shade.Name    = "ShadeResult"
-FakeEvents.A90.Name      = "A90"
-FakeEvents.Surge.Name    = "SurgeRemote"
-
+FakeEvents.Screech.Name  = "Screech"; FakeEvents.Shade.Name = "ShadeResult"
+FakeEvents.A90.Name      = "A90";     FakeEvents.Surge.Name = "SurgeRemote"
 FakeEvents.Screech_Real = RemotesFolder:WaitForChild("Screech")
 FakeEvents.Shade_Real   = RemotesFolder:WaitForChild("ShadeResult")
 FakeEvents.A90_Real     = RemotesFolder:FindFirstChild("A90")
@@ -558,7 +481,6 @@ end
 
 Globals.SeekNodesFolder = Instance.new("Folder", Services.Workspace)
 Globals.SeekNodesFolder.Name = Abysall.ESPLibrary:GenerateRandomString()
-
 Globals.RoomsNodesFolder = Instance.new("Folder", Services.Workspace)
 Globals.RoomsNodesFolder.Name = Abysall.ESPLibrary:GenerateRandomString()
 
@@ -616,8 +538,7 @@ Functions.GetPlayerFromMouse = function(TargetPart, MaxDistance)
 				local ScreenPos = Vector2.new(Result.X, Result.Y)
 				local Distance = (Functions.GetMousePosition() - ScreenPos).Magnitude
 				if Player.Name ~= LocalPlayer.Name and Distance < ClosestDistance and Distance < MaxDistance then
-					Closest = Target
-					ClosestDistance = Distance
+					Closest = Target; ClosestDistance = Distance
 				end
 			end
 		end
@@ -641,8 +562,7 @@ Functions.GetNearestEntity = function(CheckDisabled, List, UseRaycasting)
 				local Distance = LocalPlayer:DistanceFromCharacter(Entity.PrimaryPart.Position)
 				if Distance < EntityDistances[Entity.Name] and Distance < Nearest.Distance then
 					if not CheckDisabled or Entity:GetAttribute("Inactive") ~= true then
-						Nearest.Distance = Distance
-						Nearest.Object = Entity
+						Nearest.Distance = Distance; Nearest.Object = Entity
 					end
 				end
 			end
@@ -657,10 +577,7 @@ Functions.GetNearestFigure = function()
 	for _, Object in Objects.Entities do
 		if Object:IsA("Model") and Object.PrimaryPart and FigureNames[Object.Name] then
 			local Distance = LocalPlayer:DistanceFromCharacter(Object.PrimaryPart.Position)
-			if Distance < Nearest.Distance and Distance < 25 then
-				Nearest.Distance = Distance
-				Nearest.Object = Object
-			end
+			if Distance < Nearest.Distance and Distance < 25 then Nearest.Distance = Distance; Nearest.Object = Object end
 		end
 	end
 	return Nearest.Object
@@ -675,8 +592,7 @@ Functions.GetNearestHidingSpot = function()
 			if Distance < Object.HidePrompt.MaxActivationDistance and Distance < Nearest.Distance then
 				local Persistent = Functions.IsHidePersistent()
 				if not Persistent or (LastHideSpot and LastHideSpot.Value ~= Object) or not LastHideSpot then
-					Nearest.Distance = Distance
-					Nearest.Object = Object
+					Nearest.Distance = Distance; Nearest.Object = Object
 				end
 			end
 		end
@@ -689,8 +605,7 @@ Functions.GetNearestTurnNode = function()
 	for _, Node in Objects.SeekNodes do
 		local Distance = LocalPlayer:DistanceFromCharacter(Node.Position)
 		if Distance < Options.AutoSteerMinecartTurnDistance.Value and Distance < Nearest.Distance then
-			Nearest.Distance = Distance
-			Nearest.Object = Node
+			Nearest.Distance = Distance; Nearest.Object = Node
 		end
 	end
 	return Nearest.Object
@@ -702,8 +617,7 @@ Functions.GetNearestDuckBoard = function()
 		if Board.PrimaryPart then
 			local Distance = LocalPlayer:DistanceFromCharacter(Board.PrimaryPart.Position)
 			if Distance < Options.AutoSteerMinecartDuckDistance.Value and Distance < Nearest.Distance then
-				Nearest.Distance = Distance
-				Nearest.Object = Board
+				Nearest.Distance = Distance; Nearest.Object = Board
 			end
 		end
 	end
@@ -744,7 +658,6 @@ local ESPBlacklist = {}
 Functions.AddESP = function(ESPOptions, RoomBased)
 	local Object = ESPOptions.Object
 	if table.find(ESPBlacklist, Object) then return end
-
 	if RoomBased then
 		local CurrentRoom = tonumber(LocalPlayer:GetAttribute("CurrentRoom"))
 		local ObjectRoom = tonumber(Object:GetAttribute("ParentRoom"))
@@ -757,28 +670,22 @@ Functions.AddESP = function(ESPOptions, RoomBased)
 			local ObjRoom = tonumber(Object:GetAttribute("ParentRoom"))
 			if ObjRoom == NewCurrentRoom or (table.find(Objects.Doors, Object) and ObjRoom == NewCurrentRoom + 1) then
 				Abysall.ESPLibrary:AddESP(ESPOptions)
-			else
-				Abysall.ESPLibrary:RemoveESP(Object)
-			end
+			else Abysall.ESPLibrary:RemoveESP(Object) end
 		end)
-		table.insert(Connections, RoomConnection)
-		ESPConnections[Object] = RoomConnection
+		table.insert(Connections, RoomConnection); ESPConnections[Object] = RoomConnection
 		Object.Destroying:Once(function()
 			RoomConnection:Disconnect()
 			if Abysall then Abysall.ESPLibrary:RemoveESP(Object) end
 			local Pos = table.find(Connections, RoomConnection)
 			if Pos then table.remove(Connections, Pos) end
 		end)
-	else
-		Abysall.ESPLibrary:AddESP(ESPOptions)
-	end
+	else Abysall.ESPLibrary:AddESP(ESPOptions) end
 end
 
 Functions.RemoveESP = function(Object)
 	local Conn = ESPConnections[Object]
 	if Conn then
-		Conn:Disconnect()
-		ESPConnections[Object] = nil
+		Conn:Disconnect(); ESPConnections[Object] = nil
 		local Pos = table.find(Connections, Conn)
 		if Pos then table.remove(Connections, Pos) end
 	end
@@ -966,9 +873,7 @@ Toggles.AutoBreakerBox:OnChanged(function(Value)
 				Functions.Notify({ Title = "Interact with the breaker box.", Body = "It will be automatically solved." })
 				Globals.BreakerBoxInteracted = true
 			end
-		else
-			RemotesFolder.EBF:FireServer()
-		end
+		else RemotesFolder.EBF:FireServer() end
 	end
 end)
 
@@ -1115,7 +1020,7 @@ Groupboxes.Exploits_BypassRight:AddToggle("DisableAnticheat", {
 	Text = "Anticheat Bypass", Default = false, Tooltip = "Completely disables the anticheat, after interacting with a ladder."
 })
 Groupboxes.Exploits_BypassRight:AddToggle("VelocityManipulationToggle", {
-	Text = "Velocity Manipulation", Default = false, Tooltip = "Moves your character forward slowly (1 stud/sec) with noclip enabled, mitigating the game's anti-noclip."
+	Text = "Velocity Manipulation", Default = false, Tooltip = "Moves your character forward at 1 stud/sec with noclip enabled, mitigating the game's anti-noclip."
 })
 Toggles.DisableAnticheat:OnChanged(function(Value)
 	if Globals.AnticheatDisabled == true and not Value then RemotesFolder.ClimbLadder:FireServer(); Globals.AnticheatDisabled = false end
@@ -1313,9 +1218,7 @@ Toggles.DisableFiredampEffect:OnChanged(function(Value)
 		if Value then
 			Object:SetAttribute("Firedamp", false)
 			for _, FiredampObj in Camera:GetChildren() do if FiredampObj.Name == "LiveFiredamp" then FiredampObj:Destroy() end end
-		else
-			Object:SetAttribute("Firedamp", Object:GetAttribute("Firedamp_Old"))
-		end
+		else Object:SetAttribute("Firedamp", Object:GetAttribute("Firedamp_Old")) end
 	end
 	local Old = LocalPlayer:GetAttribute("CurrentRoom")
 	LocalPlayer:SetAttribute("CurrentRoom", 0); task.wait(); LocalPlayer:SetAttribute("CurrentRoom", Old)
@@ -1408,16 +1311,14 @@ Toggles.ObjectiveESPToggle:OnChanged(function(Value)
 			elseif Object.Name == "WaterPump" then Functions.AddESP({ Object = Object.Wheel, Text = "Water Pump", Color = Options.ObjectiveESPColor.Value }, true)
 			elseif Object.Name == "VineGuillotine" then Functions.AddESP({ Object = Object.Lever, Text = "Vine Lever", Color = Options.ObjectiveESPColor.Value }, true) end
 			if Label then Functions.AddESP({ Object = Object, Text = Label, Color = Options.ObjectiveESPColor.Value }, true) end
-		else
-			Functions.RemoveESP(Object)
-		end
+		else Functions.RemoveESP(Object) end
 	end
 end)
 Options.ObjectiveESPColor:OnChanged(function(Value)
 	for _, Object in Objects.Objectives do Abysall.ESPLibrary:UpdateObjectColor(Object, Value) end
 end)
 
--- ⬇️⬇️⬇️ ИЗМЕНЕНО: HonchoBoxes → ArchivesHelperESP ⬇️⬇️⬇️
+-- ⬇️⬇️⬇️ ArchivesHelperESP (бывш. HonchoBoxes) ⬇️⬇️⬇️
 Groupboxes.Visuals_ESP_Toggles:AddToggle("ArchivesHelperToggle", { Text = "ArchivesHelperESP", Default = false, Tooltip = "Highlights Archives Storage Boxes, Water Coolers and Mirrors, showing their labels." })
 Toggles.ArchivesHelperToggle:AddColorPicker("ArchivesHelperESPColor", { Text = "ArchivesHelperESP", Default = Color3.fromRGB(255, 165, 0), Transparency = 0 })
 
@@ -1442,14 +1343,12 @@ local function UpdateArchivesHelperESP(Object)
         end
         Functions.RemoveESP(Object)
         Functions.AddESP({ Object = Object, Text = Label, Color = Options.ArchivesHelperESPColor.Value }, true)
-    else
-        Functions.RemoveESP(Object)
-    end
+    else Functions.RemoveESP(Object) end
 end
 
 Toggles.ArchivesHelperToggle:OnChanged(function(Value) for _, Object in Objects.ArchivesHelper do UpdateArchivesHelperESP(Object) end end)
 Options.ArchivesHelperESPColor:OnChanged(function(Value) for _, Object in Objects.ArchivesHelper do Abysall.ESPLibrary:UpdateObjectColor(Object, Value) end end)
--- ⬆️⬆️⬆️ КОНЕЦ ИЗМЕНЕНИЯ ⬆️⬆️⬆️
+-- ⬆️⬆️⬆️ КОНЕЦ ArchivesHelperESP ⬆️⬆️⬆️
 
 Groupboxes.Visuals_ESP_Toggles:AddToggle("TrashESPToggle", { Text = "Trash", Default = false, Tooltip = "Highlights Stairwell trash items." })
 Toggles.TrashESPToggle:AddColorPicker("TrashESPColor", { Text = "Trash", Default = Color3.fromRGB(139, 69, 19), Transparency = 0 })
@@ -1457,9 +1356,7 @@ Toggles.TrashESPToggle:AddColorPicker("TrashESPColor", { Text = "Trash", Default
 local function UpdateTrashESP(Object)
     if Toggles.TrashESPToggle.Value then
         Functions.AddESP({ Object = Object, Text = ItemNames[Object.Name] or Object.Name, Color = Options.TrashESPColor.Value }, true)
-    else
-        Functions.RemoveESP(Object)
-    end
+    else Functions.RemoveESP(Object) end
 end
 
 Toggles.TrashESPToggle:OnChanged(function(Value) for _, Object in Objects.TrashItems do UpdateTrashESP(Object) end end)
@@ -1489,13 +1386,16 @@ Toggles.CurrencyESPToggle:AddColorPicker("CurrencyESPColor",   { Text = "Currenc
 Toggles.LadderESPToggle:AddColorPicker("LadderESPColor",       { Text = "Ladders",      Default = Color3.fromRGB(255, 255, 255), Transparency = 0 })
 Toggles.EntityESPToggle:AddColorPicker("EntityESPColor",       { Text = "Entities",     Default = Color3.fromRGB(255, 0, 0),     Transparency = 0 })
 
+-- ⬇️⬇️⬇️ HidingSpotLabels с HidingSpot2 и HidingSpot3 ⬇️⬇️⬇️
 local HidingSpotLabels = {
 	Wardrobe = "Closet", ["Backdoor_Wardrobe"] = "Closet", Toolshed = "Closet",
 	RetroWardrobe = "Closet", ["Wardrobe-FOOLS26"] = "Closet",
 	Locker_Large = "Locker", Rooms_Locker = "Locker", Rooms_Locker_Fridge = "Locker",
 	Bed = "Bed", Double_Bed = "Double Bed", CircularVent = "Vent", Dumpster = "Dumpster",
-	HidingSpot1 = "Closet"
+	HidingSpot1 = "Closet", HidingSpot2 = "Closet", HidingSpot3 = "Closet"
 }
+-- ⬆️⬆️⬆️ КОНЕЦ ⬆️⬆️⬆️
+
 local ChestLabels = {
 	ChestBox = true, ChestBoxLocked = true, Toolbox = true, Toolbox_Locked = true,
 	Chest_Vine = "Vine Chest", Toolshed_Small = "Toolshed", Locker_Small_Locked = "Locked Item Locker", MouseHole = "Mouse"
@@ -2465,7 +2365,6 @@ Functions.HandleHidingTransparency = function(Model)
 		end
 	end
 end
-
 Functions.HandleObject = function(Object)
 	for _, Room in CurrentRooms:GetChildren() do if Object:IsDescendantOf(Room) then Object:SetAttribute("ParentRoom", tonumber(Room.Name)); break end; task.wait() end
 	if Object.Parent == CurrentRooms then
@@ -2691,7 +2590,7 @@ Functions.HandleObject = function(Object)
 
 	elseif Name == "EyestalkEndCutscene" then Object.Name = "_EyestalkEndCutscene"
 	elseif Name == "DuckBoard" then table.insert(Objects.SeekDuckBoards, Object)
-	-- ⬇️⬇️⬇️ ИЗМЕНЕНО: ArchivesHelper (Box + Water Cooler + Mirror) ⬇️⬇️⬇️
+	-- ⬇️⬇️⬇️ ArchivesHelper (Box + Water Cooler + Mirror) ⬇️⬇️⬇️
 	elseif Name == "ArchivesStorageBox" then
 		table.insert(Objects.ArchivesHelper, Object)
 		UpdateArchivesHelperESP(Object)
@@ -2701,8 +2600,9 @@ Functions.HandleObject = function(Object)
 	elseif Name == "Mirror" then
 		table.insert(Objects.ArchivesHelper, Object)
 		UpdateArchivesHelperESP(Object)
-	-- ⬆️⬆️⬆️ КОНЕЦ ИЗМЕНЕНИЯ ⬆️⬆️⬆️
+	-- ⬆️⬆️⬆️ КОНЕЦ ⬆️⬆️⬆️
 	elseif HidingSpotLabels[Name] then
+		-- HidingSpot1 / HidingSpot2 / HidingSpot3 / Wardrobe / Locker и т.д. попадают сюда
 		if Toggles.HidingSpotESPToggle.Value then Functions.AddESP({ Object = Object, Text = HidingSpotLabels[Name], Color = Options.HidingSpotESPColor.Value }, true) end
 		Functions.HandleHidingTransparency(Object)
 		table.insert(Objects.HidingSpots, Object)
@@ -2960,7 +2860,8 @@ local AllowedInstances = {
 	RiftSpawn=true, ElevatorBreaker=true, RunnerNodes=true, PathLights=true, DuckBoard=true,
 	Padlock=true, EyestalkEndCutscene=true, MinecartRig=true, SeekMovingNewClone=true,
 	TV_Stand=true, StairwellScrapper=true, StairwellFireAlarm=true, ArchivesWaterCooler=true,
-	ArchivesStorageBox=true, Mirror=true, HidingSpot1=true,
+	ArchivesStorageBox=true, Mirror=true,
+	HidingSpot1=true, HidingSpot2=true, HidingSpot3=true,
 	BottleCrate=true, DinkyLamp=true, LargeScrew=true, JerryCan=true, AbrahamHat=true
 }
 
@@ -3363,5 +3264,118 @@ Library:OnUnload(function()
 end)
 
 while not Globals.MainUI do task.wait() end
+
+-- ⬇️⬇️⬇️ СТАНДАРТНАЯ SETTINGS-ВКЛАДКА + УДАЛЕНИЕ DISCORD + ENTER CODE ⬇️⬇️⬇️
 Abysall.Interface.ApplySettingsTab(Window)
+
+-- Утилита: обход всех элементов окна
+local function IterateAllElements(Callback)
+	if not Window or not Window.Tabs then return end
+	for _, Tab in pairs(Window.Tabs) do
+		if type(Tab) ~= "table" then continue end
+		local Groups = Tab.Groupboxes or Tab.Sections or Tab.Groups or {}
+		for _, Group in pairs(Groups) do
+			if type(Group) ~= "table" then continue end
+			local Elements = Group.Elements or Group.Items or {}
+			for _, Element in pairs(Elements) do
+				if type(Element) == "table" then
+					pcall(Callback, Element, Group, Tab)
+				end
+			end
+		end
+	end
+end
+
+-- 1) Удаление кнопки "Copy Discord Invite"
+IterateAllElements(function(Element, Group, Tab)
+	local Text = Element.Text or Element.Title or Element.Name or ""
+	if type(Text) == "string" and string.find(Text:lower(), "discord", 1, true) then
+		pcall(function() Element:Destroy() end)
+		pcall(function() Element.Visible = false end)
+	end
+end)
+
+-- 2) Скрытые коды — НЕ ОТОБРАЖАТЬ в UI! (пометка на будущее)
+-- ⚠️ НИКОГДА не выводить эти строки в placeholder/tooltip/уведомления/логи
+local SecretCodes = {
+	["unlockexecutorfeatures"] = function()
+		if not Globals.OriginalDisabled then return end
+		for _, Element in pairs(Globals.OriginalDisabled) do
+			pcall(function()
+				if Element.SetDisabled then Element:SetDisabled(false) end
+				Element.Disabled = false
+				if Element.UpdateVisualState then Element:UpdateVisualState() end
+			end)
+		end
+		Functions.Notify({ Title = "Executor features unlocked." })
+	end,
+	["defaultexecutorfeatures"] = function()
+		if not Globals.OriginalDisabled then return end
+		for _, Element in pairs(Globals.OriginalDisabled) do
+			pcall(function()
+				if Element.SetDisabled then Element:SetDisabled(true) end
+				Element.Disabled = true
+				if Element.UpdateVisualState then Element:UpdateVisualState() end
+			end)
+		end
+		Functions.Notify({ Title = "Executor features restored to default." })
+	end,
+	["console"] = function()
+		pcall(function()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/dimoonsh195/xconsole/main/console.lua"))()
+		end)
+	end,
+	["xconsole"] = function()
+		pcall(function()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/dimoonsh195/xconsole/main/console.lua"))()
+		end)
+	end,
+}
+
+-- 3) Собрать список изначально задизейбленных элементов (для code toggle)
+Globals.OriginalDisabled = {}
+IterateAllElements(function(Element)
+	if Element.Disabled == true then
+		table.insert(Globals.OriginalDisabled, Element)
+	end
+end)
+
+-- 4) Добавить поле "Enter Code" в Config-подвкладку Settings
+local CodeInputAdded = false
+for _, Tab in pairs(Window.Tabs or {}) do
+	if type(Tab) ~= "table" then continue end
+	local TabName = Tab.Name or Tab.Title or ""
+	if type(TabName) == "string" and TabName:lower():find("settings", 1, true) then
+		local Groups = Tab.Groupboxes or Tab.Sections or Tab.Groups or {}
+		for _, Group in pairs(Groups) do
+			if type(Group) ~= "table" then continue end
+			local GroupName = Group.Title or Group.Name or ""
+			if type(GroupName) == "string" and GroupName:lower():find("config", 1, true) then
+				local CodeInput = Group:AddInput("SecretCodeInput", {
+					Text = "Enter Code",
+					Default = "",
+					Numeric = false,
+					Finished = true,
+					Placeholder = "Type here...",
+					-- ⚠️ placeholder НЕ должен намекать на секретные коды
+				})
+				if CodeInput then
+					CodeInput:OnChanged(function(Value)
+						local Lower = tostring(Value or ""):lower():gsub("^%s+", ""):gsub("%s+$", "")
+						-- ⚠️ на неверный код — тихо игнорируем (никаких "Invalid code")
+						if SecretCodes[Lower] then
+							pcall(SecretCodes[Lower])
+						end
+						pcall(function() CodeInput:SetValue("") end)
+					end)
+				end
+				CodeInputAdded = true
+				break
+			end
+		end
+	end
+	if CodeInputAdded then break end
+end
+-- ⬆️⬆️⬆️ КОНЕЦ: Settings + Enter Code ⬆️⬆️⬆️
+
 Functions.Notify({ Title = "Successfully loaded in " .. math.floor((tick() - LoadStart) * 1000) / 1000 .. " seconds." , Body = "Press '" .. tostring(Options.MenuKeybind.Value) .. "' to toggle the UI."})
