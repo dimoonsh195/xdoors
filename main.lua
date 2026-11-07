@@ -378,7 +378,6 @@ Functions.Notify = function(Settings)
 		Library:OldNotify({ Title = Settings.Title, Description = Settings.Body, Time = Settings.Time })
 	end
 end
-
 Functions.Caption = function(Text, PlaySound)
 	if typeof(PlaySound) ~= "boolean" then PlaySound = true end
 	local CaptionValue = Instance.new("NumberValue")
@@ -716,9 +715,10 @@ Functions.GetRandomCode = function()
     Globals.UsedRandomCodes[NewCode] = true
     return NewCode
 end
+
 local Window = Library:CreateWindow({
 	Title = "XDOORS",
-	Footer = "script on abysallhub base",
+	Footer = "xdoors v.1.9(stairwell&archives)",
 	NotifySide = "Right",
 	ShowCustomCursor = false,
 	AutoShow = true,
@@ -798,7 +798,6 @@ end)
 Toggles.EnableCharacterSlide:OnChanged(function(Value)
 	if Character then Character:SetAttribute("CanSlide", Value and true or OldSlide) end
 end)
-
 Groupboxes.General_Self = Tabs.General:AddLeftGroupbox("Self")
 Groupboxes.General_Self:AddToggle("DoorReachToggle", {
 	Text = "Door Reach", Default = false, Tooltip = "Allows you to open doors from further away."
@@ -921,7 +920,6 @@ Groupboxes.Self_Misc:AddButton({
 	end
 })
 
--- ⬇️⬇️⬇️ ENTER CODE (добавляем гарантированно в существующий Misc groupbox) ⬇️⬇️⬇️
 Groupboxes.Self_Misc:AddDivider()
 Groupboxes.Self_Misc:AddInput("SecretCodeInput", {
 	Text = "Enter Code",
@@ -930,7 +928,6 @@ Groupboxes.Self_Misc:AddInput("SecretCodeInput", {
 	Finished = true,
 	Placeholder = "Type here...",
 })
--- ⬆️⬆️⬆️ КОНЕЦ ENTER CODE ⬆️⬆️⬆️
 
 Groupboxes.Exploits_Bypass = Tabs.Exploits:AddLeftGroupbox("Bypass")
 Groupboxes.Exploits_Bypass:AddToggle("BypassGiggle",         { Text = "Bypass Giggle",           Default = false, Tooltip = "Prevents 'Giggle' from attacking you." })
@@ -2312,11 +2309,7 @@ Functions.HandleCharacter = function(NewCharacter)
 			Camera.CFrame = CamPosition
 		end
 
-		-- ⬇️⬇️⬇️ ФИКС POSITION SPOOF: клиент видит обычно (камера поднимается на 2.346) ⬇️⬇️⬇️
-		if Toggles.PositionSpoof.Value and Floor ~= "Fools" and Floor ~= "OldHotel" and not Globals.SpectateEntity then
-			Camera.CFrame = Camera.CFrame + Vector3.new(0, 2.346, 0)
-		end
-		-- ⬆️⬆️⬆️ КОНЕЦ ФИКСА ⬆️⬆️⬆️
+		-- Position Spoof теперь строго как во втором скрипте: без камера-фикса, без подъёма камеры.
 
 		if Main_Game then task.wait(); Main_Game.fovtarget = Options.FieldOfView.Value else Camera.FieldOfView = Options.FieldOfView.Value end
 
@@ -3111,12 +3104,10 @@ end)
 
 local RusherAliases = { Rush=true, Ambush=true, Creak=true, Eyes=true, Lookman=true, Blitz=true, ["A-60"]=true, ["A-120"]=true, AR0xMBUSH=true, ["RNIUSHCG=="]=true, ["Custom Entity"]=true, Bash=true, Scribbles=true, Drones=true }
 
--- ⬇️⬇️⬇️ ФИКС CREAK ESP: таймаут PrimaryPart, поддержка Part, порядок AddESP ⬇️⬇️⬇️
 Connections.EntityHandler = Services.Workspace.ChildAdded:Connect(function(Entity)
 	local EntityData = Entities[Entity.Name]
 	if not EntityData then return end
 
-	-- Ждём PrimaryPart максимум 5 секунд (если это Model), иначе fallback
 	local WaitStart = tick()
 	local Timeout = 5
 	if Entity:IsA("Model") then
@@ -3135,7 +3126,6 @@ Connections.EntityHandler = Services.Workspace.ChildAdded:Connect(function(Entit
 
 	task.wait(0.1)
 
-	-- Определяем позицию для дистанс-чека
 	local EntityPosition
 	if Entity:IsA("BasePart") then
 		EntityPosition = Entity.Position
@@ -3148,7 +3138,6 @@ Connections.EntityHandler = Services.Workspace.ChildAdded:Connect(function(Entit
 	local Alias = EntityData.Alias
 	local RealAlias = Alias
 
-	-- Сетап визуала ДО AddESP (чтобы ESP-либа видела структуру)
 	if RusherAliases[EntityData.Alias] then
 		pcall(function()
 			if Entity:IsA("Model") and not Entity:FindFirstChildOfClass("Humanoid") then
@@ -3159,7 +3148,6 @@ Connections.EntityHandler = Services.Workspace.ChildAdded:Connect(function(Entit
 		if Root then Root.Transparency = 0.999; Root.Material = Enum.Material.Plastic end
 	end
 
-	-- Нотификация
 	if Options.EntityList.Value[Alias] and Toggles.NotifyEntities.Value then
 		local NotifyTitle = EntityData.NotifyMessage.Title
 		local NotifyBody  = EntityData.NotifyMessage.Body
@@ -3176,7 +3164,6 @@ Connections.EntityHandler = Services.Workspace.ChildAdded:Connect(function(Entit
 		if Toggles.EntityChatToggle.Value then Functions.SendChat(Alias .. " " .. Options.EntityChatMessage.Value) end
 	end
 
-	-- ESP
 	if Entity.Name ~= "GloombatSwarm" then
 		if Toggles.EntityESPToggle.Value and Options.EntityESPOptions.Value[RealAlias] then
 			local ESPObject
@@ -3192,7 +3179,6 @@ Connections.EntityHandler = Services.Workspace.ChildAdded:Connect(function(Entit
 
 	if Entity.Name == "Lookman" then CurrentRooms.ChildAdded:Wait(); task.wait(10); Entity:Destroy() end
 end)
--- ⬆️⬆️⬆️ КОНЕЦ ФИКСА CREAK ESP ⬆️⬆️⬆️
 
 local LastClean = tick()
 Connections.Cleaner = Services.RunService.Heartbeat:Connect(function()
@@ -3298,10 +3284,8 @@ end)
 
 while not Globals.MainUI do task.wait() end
 
--- ⬇️⬇️⬇️ СТАНДАРТНАЯ SETTINGS-ВКЛАДКА ⬇️⬇️⬇️
 Abysall.Interface.ApplySettingsTab(Window)
 
--- ⬇️⬇️⬇️ УДАЛЕНИЕ DISCORD-КНОПКИ (через скан визуального дерева) ⬇️⬇️⬇️
 local function HideDiscordButtons()
     local function ScanGui(Gui)
         if not Gui then return end
@@ -3334,10 +3318,7 @@ task.spawn(function()
     task.wait(1)
     HideDiscordButtons()
 end)
--- ⬆️⬆️⬆️ КОНЕЦ УДАЛЕНИЯ DISCORD ⬆️⬆️⬆️
 
--- ⬇️⬇️⬇️ СКРЫТЫЕ КОДЫ (НЕ ОТОБРАЖАТЬ!) ⬇️⬇️⬇️
--- Собираем список изначально задизейбленных элементов через Toggles/Options (надёжно)
 Globals.OriginalDisabled = {}
 for _, Element in pairs(Toggles) do
     if type(Element) == "table" and Element.Disabled == true then
@@ -3383,7 +3364,6 @@ local SecretCodes = {
 	end,
 }
 
--- Подключаем Enter Code (добавлен в Part 2 в Misc groupbox)
 if Options.SecretCodeInput then
 	Options.SecretCodeInput:OnChanged(function(Value)
 		local Lower = tostring(Value or ""):lower():gsub("^%s+", ""):gsub("%s+$", "")
@@ -3393,6 +3373,5 @@ if Options.SecretCodeInput then
 		pcall(function() Options.SecretCodeInput:SetValue("") end)
 	end)
 end
--- ⬆️⬆️⬆️ КОНЕЦ СКРЫТЫХ КОДОВ ⬆️⬆️⬆️
 
 Functions.Notify({ Title = "Successfully loaded in " .. math.floor((tick() - LoadStart) * 1000) / 1000 .. " seconds." , Body = "Press '" .. tostring(Options.MenuKeybind.Value) .. "' to toggle the UI."})
