@@ -49,13 +49,12 @@ local Objects = {
 	SeekDuckBoards = {},
 	SeekBridges = {},
 	PathLights = {},
-	HonchoBoxes = {},
+	ArchivesHelper = {},
 	TrashItems = {}
 }
 
 Globals.IncompatibleMessage = "Your executor doesn't support this feature."
 
--- Переводы для уведомлений
 Globals.Translations = {
 	En = {
 		Rush = { Title = "Entity 'Rush' has spawned.", Body = "Find a hiding spot." },
@@ -828,7 +827,6 @@ Functions.GetRandomCode = function()
     Globals.UsedRandomCodes[NewCode] = true
     return NewCode
 end
-
 local Window = Library:CreateWindow({
 	Title = "XDOORS",
 	Footer = "script on abysallhub base",
@@ -846,25 +844,7 @@ local Tabs = {
 	Exploits = Window:AddTab("Exploits", "shield"),
 	Visuals  = Window:AddTab("Visuals", "eye"),
 	Floors   = Window:AddTab("Floors", "earth"),
-	Settings = Window:AddTab("Settings", "settings"),
 }
-
--- SETTINGS TAB
-Groupboxes.Settings_Main = Tabs.Settings:AddLeftGroupbox("Menu Settings")
-Groupboxes.Settings_Main:AddSlider("DPIScale", {
-	Text = "DPI Scale", Min = 50, Max = 200, Default = 100, Rounding = 0, Compact = true
-})
-Options.DPIScale:OnChanged(function(Value)
-	if Library.Scale then Library.Scale = Value / 100 end
-end)
-
-Groupboxes.Settings_Main:AddDropdown("Language", {
-	Text = "Language",
-	Values = { "En", "Ru", "Ua" },
-	Default = 1,
-	Multi = false,
-	AllowNull = false
-})
 
 Groupboxes.General_Character = Tabs.General:AddLeftGroupbox("Character")
 Groupboxes.General_Character:AddSlider("SpeedBoostSlider", {
@@ -1053,7 +1033,6 @@ Groupboxes.Self_Misc:AddButton({
 		end
 	end
 })
-
 Groupboxes.Exploits_Bypass = Tabs.Exploits:AddLeftGroupbox("Bypass")
 Groupboxes.Exploits_Bypass:AddToggle("BypassGiggle",         { Text = "Bypass Giggle",           Default = false, Tooltip = "Prevents 'Giggle' from attacking you." })
 Groupboxes.Exploits_Bypass:AddToggle("BypassDupe",           { Text = "Bypass Dupe",             Default = false, Tooltip = "Prevents you from open 'Dupe' fake doors." })
@@ -1136,7 +1115,7 @@ Groupboxes.Exploits_BypassRight:AddToggle("DisableAnticheat", {
 	Text = "Anticheat Bypass", Default = false, Tooltip = "Completely disables the anticheat, after interacting with a ladder."
 })
 Groupboxes.Exploits_BypassRight:AddToggle("VelocityManipulationToggle", {
-	Text = "Velocity Manipulation", Default = false, Tooltip = "Moves your character forward slowly, mitigating the game's anti-noclip."
+	Text = "Velocity Manipulation", Default = false, Tooltip = "Moves your character forward slowly (1 stud/sec) with noclip enabled, mitigating the game's anti-noclip."
 })
 Toggles.DisableAnticheat:OnChanged(function(Value)
 	if Globals.AnticheatDisabled == true and not Value then RemotesFolder.ClimbLadder:FireServer(); Globals.AnticheatDisabled = false end
@@ -1418,7 +1397,6 @@ local ObjectiveLabels = {
 	["TV_Stand"]               = "Noise spawn",
 	["StairwellScrapper"]      = "Recycler",
 	["StairwellFireAlarm"]     = "Firealarm",
-	["ArchivesWaterCooler"]    = "Watercooler",
 }
 
 Toggles.ObjectiveESPToggle:OnChanged(function(Value)
@@ -1439,30 +1417,39 @@ Options.ObjectiveESPColor:OnChanged(function(Value)
 	for _, Object in Objects.Objectives do Abysall.ESPLibrary:UpdateObjectColor(Object, Value) end
 end)
 
-Groupboxes.Visuals_ESP_Toggles:AddToggle("HonchoBoxesToggle", { Text = "Honchoboxes", Default = false, Tooltip = "Highlights Archives Storage Boxes and shows their labels." })
-Toggles.HonchoBoxesToggle:AddColorPicker("HonchoBoxesESPColor", { Text = "Honchoboxes", Default = Color3.fromRGB(255, 165, 0), Transparency = 0 })
+-- ⬇️⬇️⬇️ ИЗМЕНЕНО: HonchoBoxes → ArchivesHelperESP ⬇️⬇️⬇️
+Groupboxes.Visuals_ESP_Toggles:AddToggle("ArchivesHelperToggle", { Text = "ArchivesHelperESP", Default = false, Tooltip = "Highlights Archives Storage Boxes, Water Coolers and Mirrors, showing their labels." })
+Toggles.ArchivesHelperToggle:AddColorPicker("ArchivesHelperESPColor", { Text = "ArchivesHelperESP", Default = Color3.fromRGB(255, 165, 0), Transparency = 0 })
 
-local function UpdateHonchoBoxESP(Object)
-    if Toggles.HonchoBoxesToggle.Value then
-        local Label = Object:FindFirstChild("Meshes", true) and Object.Meshes:FindFirstChild("Box", true) and Object.Meshes.Box:FindFirstChild("Number", true) and Object.Meshes.Box.Number:FindFirstChild("Text", true) and Object.Meshes.Box.Number.Text:FindFirstChild("Label", true)
-        local LabelText = Label and Label.Text or "Box"
-        Functions.RemoveESP(Object)
-        Functions.AddESP({ Object = Object, Text = LabelText, Color = Options.HonchoBoxesESPColor.Value }, true)
-        if Label then
-            Label:GetPropertyChangedSignal("Text"):Connect(function()
-                if Toggles.HonchoBoxesToggle.Value then
-                    Functions.RemoveESP(Object)
-                    Functions.AddESP({ Object = Object, Text = Label.Text, Color = Options.HonchoBoxesESPColor.Value }, true)
-                end
-            end)
+local function UpdateArchivesHelperESP(Object)
+    if Toggles.ArchivesHelperToggle.Value then
+        local Label = "Box"
+        if Object.Name == "ArchivesStorageBox" then
+            local BoxLabel = Object:FindFirstChild("Meshes", true) and Object.Meshes:FindFirstChild("Box", true) and Object.Meshes.Box:FindFirstChild("Number", true) and Object.Meshes.Box.Number:FindFirstChild("Text", true) and Object.Meshes.Box.Number.Text:FindFirstChild("Label", true)
+            if BoxLabel then
+                Label = BoxLabel.Text
+                BoxLabel:GetPropertyChangedSignal("Text"):Connect(function()
+                    if Toggles.ArchivesHelperToggle.Value then
+                        Functions.RemoveESP(Object)
+                        Functions.AddESP({ Object = Object, Text = BoxLabel.Text, Color = Options.ArchivesHelperESPColor.Value }, true)
+                    end
+                end)
+            end
+        elseif Object.Name == "ArchivesWaterCooler" then
+            Label = "Water Cooler"
+        elseif Object.Name == "Mirror" then
+            Label = "Mirror"
         end
+        Functions.RemoveESP(Object)
+        Functions.AddESP({ Object = Object, Text = Label, Color = Options.ArchivesHelperESPColor.Value }, true)
     else
         Functions.RemoveESP(Object)
     end
 end
 
-Toggles.HonchoBoxesToggle:OnChanged(function(Value) for _, Object in Objects.HonchoBoxes do UpdateHonchoBoxESP(Object) end end)
-Options.HonchoBoxesESPColor:OnChanged(function(Value) for _, Object in Objects.HonchoBoxes do Abysall.ESPLibrary:UpdateObjectColor(Object, Value) end end)
+Toggles.ArchivesHelperToggle:OnChanged(function(Value) for _, Object in Objects.ArchivesHelper do UpdateArchivesHelperESP(Object) end end)
+Options.ArchivesHelperESPColor:OnChanged(function(Value) for _, Object in Objects.ArchivesHelper do Abysall.ESPLibrary:UpdateObjectColor(Object, Value) end end)
+-- ⬆️⬆️⬆️ КОНЕЦ ИЗМЕНЕНИЯ ⬆️⬆️⬆️
 
 Groupboxes.Visuals_ESP_Toggles:AddToggle("TrashESPToggle", { Text = "Trash", Default = false, Tooltip = "Highlights Stairwell trash items." })
 Toggles.TrashESPToggle:AddColorPicker("TrashESPColor", { Text = "Trash", Default = Color3.fromRGB(139, 69, 19), Transparency = 0 })
@@ -1677,7 +1664,6 @@ Options.ESPTracersOrigin:OnChanged(function(V)   Abysall.ESPLibrary:SetTracerOri
 Options.ESPTracerThickness:OnChanged(function(V) Abysall.ESPLibrary:SetTracerSize(V) end)
 Toggles.ESPArrowsToggle:OnChanged(function(V)    Abysall.ESPLibrary:SetArrows(V) end)
 Options.ESPArrowsRadius:OnChanged(function(V)    Abysall.ESPLibrary:SetArrowRadius(V) end)
-
 Tabs.Floors:UpdateWarningBox({
 	Visible = true,
 	Title = "Compatability Warning",
@@ -2310,9 +2296,20 @@ Functions.HandleCharacter = function(NewCharacter)
 		if Toggles.RemoveSurge.Value then Globals.SurgeFrame.Name = "SurgeVignette_Disabled" end
 	end
 
+	-- ⬇️⬇️⬇️ ИЗМЕНЕНО: Velocity (скорость = 1, WalkSpeed = 1 при активном бинде) ⬇️⬇️⬇️
 	Connections.MainHandler = Services.RunService.RenderStepped:Connect(function()
 		if Services.Workspace:FindFirstChild("Camera") then Camera = Services.Workspace:FindFirstChild("Camera") end
-		if Toggles.SpeedBoostToggle.Value then Humanoid.WalkSpeed = Functions.GetCurrentSpeed() + Options.SpeedBoostSlider.Value end
+
+		if Toggles.VelocityManipulationToggle.Value then
+			Humanoid.WalkSpeed = 1
+			Globals.VelocityWasActive = true
+		elseif Globals.VelocityWasActive == true then
+			Humanoid.WalkSpeed = Functions.GetCurrentSpeed() + (Toggles.SpeedBoostToggle.Value and Options.SpeedBoostSlider.Value or 0)
+			Globals.VelocityWasActive = false
+		elseif Toggles.SpeedBoostToggle.Value then
+			Humanoid.WalkSpeed = Functions.GetCurrentSpeed() + Options.SpeedBoostSlider.Value
+		end
+
 		if Globals.Lagging or (Options.SpeedBoostSlider.Value <= 6 and Options.FlySpeed.Value <= 21) then CollisionPartClone.Massless = true end
 
 		Globals.IsEyes    = Services.Workspace:FindFirstChild("Eyes") ~= nil or Services.Workspace:FindFirstChild("Lookman") ~= nil
@@ -2372,10 +2369,10 @@ Functions.HandleCharacter = function(NewCharacter)
 		CollisionClone.CollisionGroup = Collision.CollisionGroup
 		CollisionClone.Position = RootPart.Position + Vector3.new(0, Toggles.PositionSpoof.Value and 1.75 or 0.18, 0)
 
-		if Toggles.VelocityManipulationToggle.Value and Options.VelocityManipulationMode.Value == "Velocity" then Globals.ManipulateBody.Parent = RootPart; Globals.ManipulateBody.Velocity = RootPart.CFrame.LookVector * 2.25
+		if Toggles.VelocityManipulationToggle.Value and Options.VelocityManipulationMode.Value == "Velocity" then Globals.ManipulateBody.Parent = RootPart; Globals.ManipulateBody.Velocity = RootPart.CFrame.LookVector * 1
 		else Globals.ManipulateBody.Parent = nil end
 
-		if Toggles.VelocityManipulationToggle.Value and Options.VelocityManipulationMode.Value == "Pivot" and Floor ~= "Fools" and Floor ~= "OldHotel" then Character:PivotTo(Camera:GetPivot() * CFrame.new(0, 0, 2560)) end
+		if Toggles.VelocityManipulationToggle.Value and Options.VelocityManipulationMode.Value == "Pivot" and Floor ~= "Fools" and Floor ~= "OldHotel" then Character:PivotTo(Camera:GetPivot() * CFrame.new(0, 0, 1)) end
 
 		if Toggles.FlyToggle.Value then Globals.FlyBody.Parent = RootPart; Globals.FlyBody.Velocity = Functions.GetFlyVelocity() * Options.FlySpeed.Value
 		else Globals.FlyBody.Parent = nil end
@@ -2443,6 +2440,7 @@ Functions.HandleCharacter = function(NewCharacter)
 		end
 		if ClosestPlayer.Object and LocalPlayer:GetAttribute("Alive") ~= true then LocalPlayer:SetAttribute("CurrentRoom", ClosestPlayer.Object:GetAttribute("CurrentRoom")) end
 	end)
+	-- ⬆️⬆️⬆️ КОНЕЦ ИЗМЕНЕНИЯ ⬆️⬆️⬆️
 
 	task.wait(1)
 	if Toggles.PositionSpoof.Value and Floor ~= "Fools" and Floor ~= "OldHotel" then RootPart.CFrame = RootPart.CFrame * CFrame.new(0, -2.346, 0); Humanoid.HipHeight = 0.05; RemotesFolder.Crouch:FireServer(true, true) end
@@ -2518,9 +2516,6 @@ Functions.HandleObject = function(Object)
 		table.insert(Objects.Objectives, Object)
 	elseif Name == "StairwellFireAlarm" then
 		if Toggles.ObjectiveESPToggle.Value then Functions.AddESP({ Object = Object, Text = "Firealarm", Color = Options.ObjectiveESPColor.Value }, true) end
-		table.insert(Objects.Objectives, Object)
-	elseif Name == "ArchivesWaterCooler" then
-		if Toggles.ObjectiveESPToggle.Value then Functions.AddESP({ Object = Object, Text = "Watercooler", Color = Options.ObjectiveESPColor.Value }, true) end
 		table.insert(Objects.Objectives, Object)
 	elseif Name == "CringlePresent" then
 		if Toggles.ObjectiveESPToggle.Value then Functions.AddESP({ Object = Object, Text = "Present", Color = Options.ObjectiveESPColor.Value }, true) end
@@ -2696,9 +2691,17 @@ Functions.HandleObject = function(Object)
 
 	elseif Name == "EyestalkEndCutscene" then Object.Name = "_EyestalkEndCutscene"
 	elseif Name == "DuckBoard" then table.insert(Objects.SeekDuckBoards, Object)
+	-- ⬇️⬇️⬇️ ИЗМЕНЕНО: ArchivesHelper (Box + Water Cooler + Mirror) ⬇️⬇️⬇️
 	elseif Name == "ArchivesStorageBox" then
-		table.insert(Objects.HonchoBoxes, Object)
-		UpdateHonchoBoxESP(Object)
+		table.insert(Objects.ArchivesHelper, Object)
+		UpdateArchivesHelperESP(Object)
+	elseif Name == "ArchivesWaterCooler" then
+		table.insert(Objects.ArchivesHelper, Object)
+		UpdateArchivesHelperESP(Object)
+	elseif Name == "Mirror" then
+		table.insert(Objects.ArchivesHelper, Object)
+		UpdateArchivesHelperESP(Object)
+	-- ⬆️⬆️⬆️ КОНЕЦ ИЗМЕНЕНИЯ ⬆️⬆️⬆️
 	elseif HidingSpotLabels[Name] then
 		if Toggles.HidingSpotESPToggle.Value then Functions.AddESP({ Object = Object, Text = HidingSpotLabels[Name], Color = Options.HidingSpotESPColor.Value }, true) end
 		Functions.HandleHidingTransparency(Object)
@@ -2957,7 +2960,7 @@ local AllowedInstances = {
 	RiftSpawn=true, ElevatorBreaker=true, RunnerNodes=true, PathLights=true, DuckBoard=true,
 	Padlock=true, EyestalkEndCutscene=true, MinecartRig=true, SeekMovingNewClone=true,
 	TV_Stand=true, StairwellScrapper=true, StairwellFireAlarm=true, ArchivesWaterCooler=true,
-	ArchivesStorageBox=true, HidingSpot1=true,
+	ArchivesStorageBox=true, Mirror=true, HidingSpot1=true,
 	BottleCrate=true, DinkyLamp=true, LargeScrew=true, JerryCan=true, AbrahamHat=true
 }
 
