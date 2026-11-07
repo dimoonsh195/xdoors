@@ -1,5 +1,5 @@
 -- ============================================================
--- ⚠️ СКРЫТЫЕ КОДЫ (НИКОГДА НЕ ОТОБРАЖАТЬ В UI/ЛОГАХ/ТУЛТИПАХ!):
+--  СКРЫТЫЕ КОДЫ (НИКОГДА НЕ ОТОБРАЖАТЬ В UI/ЛОГАХ/ТУЛТИПАХ!):
 --   "unlockexecutorfeatures"   - снимает Disabled-ограничения с функций
 --   "defaultexecutorfeatures"  - возвращает ограничения обратно
 --   "console" / "xconsole"     - открывает консоль
@@ -37,27 +37,11 @@ local Functions = {}
 local PartProperties = {}
 
 local Objects = {
-	Prompts = {},
-	Objectives = {},
-	Doors = {},
-	HidingSpots = {},
-	Entities = {},
-	SeekObstructions = {},
-	Items = {},
-	Chests = {},
-	Currency = {},
-	Ladders = {},
-	Obstructions = {},
-	EventTriggers = {},
-	JumpscareModules = {},
-	SeekHighlights = {},
-	EyestalkHighlights = {},
-	SeekNodes = {},
-	SeekDuckBoards = {},
-	SeekBridges = {},
-	PathLights = {},
-	ArchivesHelper = {},
-	TrashItems = {}
+	Prompts = {}, Objectives = {}, Doors = {}, HidingSpots = {}, Entities = {},
+	SeekObstructions = {}, Items = {}, Chests = {}, Currency = {}, Ladders = {},
+	Obstructions = {}, EventTriggers = {}, JumpscareModules = {}, SeekHighlights = {},
+	EyestalkHighlights = {}, SeekNodes = {}, SeekDuckBoards = {}, SeekBridges = {},
+	PathLights = {}, ArchivesHelper = {}, TrashItems = {}
 }
 
 Globals.IncompatibleMessage = "Your executor doesn't support this feature."
@@ -82,9 +66,7 @@ Globals.Translations = {
 
 Functions.CheckCompatability = function(Array)
 	for _, Name in Array do
-		if not Abysall.Environment[Name] then
-			return false
-		end
+		if not Abysall.Environment[Name] then return false end
 	end
 	return true
 end
@@ -938,6 +920,18 @@ Groupboxes.Self_Misc:AddButton({
 		end
 	end
 })
+
+-- ⬇️⬇️⬇️ ENTER CODE (добавляем гарантированно в существующий Misc groupbox) ⬇️⬇️⬇️
+Groupboxes.Self_Misc:AddDivider()
+Groupboxes.Self_Misc:AddInput("SecretCodeInput", {
+	Text = "Enter Code",
+	Default = "",
+	Numeric = false,
+	Finished = true,
+	Placeholder = "Type here...",
+})
+-- ⬆️⬆️⬆️ КОНЕЦ ENTER CODE ⬆️⬆️⬆️
+
 Groupboxes.Exploits_Bypass = Tabs.Exploits:AddLeftGroupbox("Bypass")
 Groupboxes.Exploits_Bypass:AddToggle("BypassGiggle",         { Text = "Bypass Giggle",           Default = false, Tooltip = "Prevents 'Giggle' from attacking you." })
 Groupboxes.Exploits_Bypass:AddToggle("BypassDupe",           { Text = "Bypass Dupe",             Default = false, Tooltip = "Prevents you from open 'Dupe' fake doors." })
@@ -1127,7 +1121,6 @@ Toggles.RemoveInteractingSounds:OnChanged(function(Value)
 	PS.Notification.Volume = Value and 0 or 0.03
 	Globals.MainUI.Initiator.Main_Game.Reminder.Caption.Volume = Value and 0 or 0.1
 end)
-
 Groupboxes.Visuals_LeftTab = Tabs.Visuals:AddLeftTabbox("Camera / Effects")
 Groupboxes.Visuals_Camera = Groupboxes.Visuals_LeftTab:AddTab("Camera")
 Groupboxes.Visuals_Camera:AddToggle("AmbientToggle", { Text = "Ambient", Default = false, Tooltip = "Changes the lighting color to the specified value." })
@@ -1318,7 +1311,6 @@ Options.ObjectiveESPColor:OnChanged(function(Value)
 	for _, Object in Objects.Objectives do Abysall.ESPLibrary:UpdateObjectColor(Object, Value) end
 end)
 
--- ⬇️⬇️⬇️ ArchivesHelperESP (бывш. HonchoBoxes) ⬇️⬇️⬇️
 Groupboxes.Visuals_ESP_Toggles:AddToggle("ArchivesHelperToggle", { Text = "ArchivesHelperESP", Default = false, Tooltip = "Highlights Archives Storage Boxes, Water Coolers and Mirrors, showing their labels." })
 Toggles.ArchivesHelperToggle:AddColorPicker("ArchivesHelperESPColor", { Text = "ArchivesHelperESP", Default = Color3.fromRGB(255, 165, 0), Transparency = 0 })
 
@@ -1348,7 +1340,6 @@ end
 
 Toggles.ArchivesHelperToggle:OnChanged(function(Value) for _, Object in Objects.ArchivesHelper do UpdateArchivesHelperESP(Object) end end)
 Options.ArchivesHelperESPColor:OnChanged(function(Value) for _, Object in Objects.ArchivesHelper do Abysall.ESPLibrary:UpdateObjectColor(Object, Value) end end)
--- ⬆️⬆️⬆️ КОНЕЦ ArchivesHelperESP ⬆️⬆️⬆️
 
 Groupboxes.Visuals_ESP_Toggles:AddToggle("TrashESPToggle", { Text = "Trash", Default = false, Tooltip = "Highlights Stairwell trash items." })
 Toggles.TrashESPToggle:AddColorPicker("TrashESPColor", { Text = "Trash", Default = Color3.fromRGB(139, 69, 19), Transparency = 0 })
@@ -1370,7 +1361,7 @@ Groupboxes.Visuals_ESP_Toggles:AddToggle("ItemESPToggle",       { Text = "Items"
 Groupboxes.Visuals_ESP_Toggles:AddToggle("CurrencyESPToggle",   { Text = "Currency",     Default = false, Tooltip = "Highlights all currency that spawns." })
 Groupboxes.Visuals_ESP_Toggles:AddToggle("LadderESPToggle",     { Text = "Ladders",      Default = false, Tooltip = "Highlights ladders that can be used to disable the anticheat." })
 Groupboxes.Visuals_ESP_Toggles:AddDivider()
-Groupboxes.Visuals_ESP_Toggles:AddDropdown("EntityESPOptions",     { 
+Groupboxes.Visuals_ESP_Toggles:AddDropdown("EntityESPOptions",     {
 	Text = "Entity List",
 	Values = { "Rush","Ambush","Creak","Eyes","Dupe","Figure","Blitz","Lookman","Snare","Giggle","Gloombat Eggs","Grumble","A-60","A-120","Sally","Jeff the Killer","Groundskeeper","Mandrake Hole","Monument","Bramble","AR0xMBUSH","RNIUSHCG==", "Bash", "Scribbles", "Drones" },
 	Multi = true, AllowNull = true
@@ -1386,7 +1377,6 @@ Toggles.CurrencyESPToggle:AddColorPicker("CurrencyESPColor",   { Text = "Currenc
 Toggles.LadderESPToggle:AddColorPicker("LadderESPColor",       { Text = "Ladders",      Default = Color3.fromRGB(255, 255, 255), Transparency = 0 })
 Toggles.EntityESPToggle:AddColorPicker("EntityESPColor",       { Text = "Entities",     Default = Color3.fromRGB(255, 0, 0),     Transparency = 0 })
 
--- ⬇️⬇️⬇️ HidingSpotLabels с HidingSpot2 и HidingSpot3 ⬇️⬇️⬇️
 local HidingSpotLabels = {
 	Wardrobe = "Closet", ["Backdoor_Wardrobe"] = "Closet", Toolshed = "Closet",
 	RetroWardrobe = "Closet", ["Wardrobe-FOOLS26"] = "Closet",
@@ -1394,13 +1384,13 @@ local HidingSpotLabels = {
 	Bed = "Bed", Double_Bed = "Double Bed", CircularVent = "Vent", Dumpster = "Dumpster",
 	HidingSpot1 = "Closet", HidingSpot2 = "Closet", HidingSpot3 = "Closet"
 }
--- ⬆️⬆️⬆️ КОНЕЦ ⬆️⬆️⬆️
 
 local ChestLabels = {
 	ChestBox = true, ChestBoxLocked = true, Toolbox = true, Toolbox_Locked = true,
 	Chest_Vine = "Vine Chest", Toolshed_Small = "Toolshed", Locker_Small_Locked = "Locked Item Locker", MouseHole = "Mouse"
 }
 local EntityESPLabels = {
+	Creak = "Creak",
 	JeffTheKiller = "Jeff the Killer", GiggleCeiling = "Giggle",
 	Snare = "Snare", GrumbleRig = "Grumble",
 	Drakobloxxer = "Drakobloxxer", Hole = "Mandrake Hole", Groundskeeper = "Groundskeeper",
@@ -1938,7 +1928,6 @@ local CharacterOldConnectionKeys = {
 Globals.IsTyping = false
 Connections.TextBoxConnection1 = Services.UserInputService.TextBoxFocused:Connect(function() Globals.IsTyping = true end)
 Connections.TextBoxConnection2 = Services.UserInputService.TextBoxFocusReleased:Connect(function() Globals.IsTyping = false end)
-
 Functions.HandleCharacter = function(NewCharacter)
 	for _, Key in CharacterOldConnectionKeys do if Connections[Key] then Connections[Key]:Disconnect(); Connections[Key] = nil end end
 	while not LocalPlayer.PlayerGui:FindFirstChild("MainUI") do task.wait() end
@@ -2196,7 +2185,6 @@ Functions.HandleCharacter = function(NewCharacter)
 		if Toggles.RemoveSurge.Value then Globals.SurgeFrame.Name = "SurgeVignette_Disabled" end
 	end
 
-	-- ⬇️⬇️⬇️ ИЗМЕНЕНО: Velocity (скорость = 1, WalkSpeed = 1 при активном бинде) ⬇️⬇️⬇️
 	Connections.MainHandler = Services.RunService.RenderStepped:Connect(function()
 		if Services.Workspace:FindFirstChild("Camera") then Camera = Services.Workspace:FindFirstChild("Camera") end
 
@@ -2324,6 +2312,12 @@ Functions.HandleCharacter = function(NewCharacter)
 			Camera.CFrame = CamPosition
 		end
 
+		-- ⬇️⬇️⬇️ ФИКС POSITION SPOOF: клиент видит обычно (камера поднимается на 2.346) ⬇️⬇️⬇️
+		if Toggles.PositionSpoof.Value and Floor ~= "Fools" and Floor ~= "OldHotel" and not Globals.SpectateEntity then
+			Camera.CFrame = Camera.CFrame + Vector3.new(0, 2.346, 0)
+		end
+		-- ⬆️⬆️⬆️ КОНЕЦ ФИКСА ⬆️⬆️⬆️
+
 		if Main_Game then task.wait(); Main_Game.fovtarget = Options.FieldOfView.Value else Camera.FieldOfView = Options.FieldOfView.Value end
 
 		if Toggles.RemoveClosetDelay.Value and Humanoid.MoveDirection ~= Vector3.zero and (CollisionPart.Anchored or RootPart.Anchored) and Character:GetAttribute("AnimatingClient") ~= true and Character:GetAttribute("Hiding") == true then RemotesFolder.CamLock:FireServer() end
@@ -2340,7 +2334,6 @@ Functions.HandleCharacter = function(NewCharacter)
 		end
 		if ClosestPlayer.Object and LocalPlayer:GetAttribute("Alive") ~= true then LocalPlayer:SetAttribute("CurrentRoom", ClosestPlayer.Object:GetAttribute("CurrentRoom")) end
 	end)
-	-- ⬆️⬆️⬆️ КОНЕЦ ИЗМЕНЕНИЯ ⬆️⬆️⬆️
 
 	task.wait(1)
 	if Toggles.PositionSpoof.Value and Floor ~= "Fools" and Floor ~= "OldHotel" then RootPart.CFrame = RootPart.CFrame * CFrame.new(0, -2.346, 0); Humanoid.HipHeight = 0.05; RemotesFolder.Crouch:FireServer(true, true) end
@@ -2365,6 +2358,7 @@ Functions.HandleHidingTransparency = function(Model)
 		end
 	end
 end
+
 Functions.HandleObject = function(Object)
 	for _, Room in CurrentRooms:GetChildren() do if Object:IsDescendantOf(Room) then Object:SetAttribute("ParentRoom", tonumber(Room.Name)); break end; task.wait() end
 	if Object.Parent == CurrentRooms then
@@ -2590,7 +2584,6 @@ Functions.HandleObject = function(Object)
 
 	elseif Name == "EyestalkEndCutscene" then Object.Name = "_EyestalkEndCutscene"
 	elseif Name == "DuckBoard" then table.insert(Objects.SeekDuckBoards, Object)
-	-- ⬇️⬇️⬇️ ArchivesHelper (Box + Water Cooler + Mirror) ⬇️⬇️⬇️
 	elseif Name == "ArchivesStorageBox" then
 		table.insert(Objects.ArchivesHelper, Object)
 		UpdateArchivesHelperESP(Object)
@@ -2600,9 +2593,7 @@ Functions.HandleObject = function(Object)
 	elseif Name == "Mirror" then
 		table.insert(Objects.ArchivesHelper, Object)
 		UpdateArchivesHelperESP(Object)
-	-- ⬆️⬆️⬆️ КОНЕЦ ⬆️⬆️⬆️
 	elseif HidingSpotLabels[Name] then
-		-- HidingSpot1 / HidingSpot2 / HidingSpot3 / Wardrobe / Locker и т.д. попадают сюда
 		if Toggles.HidingSpotESPToggle.Value then Functions.AddESP({ Object = Object, Text = HidingSpotLabels[Name], Color = Options.HidingSpotESPColor.Value }, true) end
 		Functions.HandleHidingTransparency(Object)
 		table.insert(Objects.HidingSpots, Object)
@@ -3120,23 +3111,64 @@ end)
 
 local RusherAliases = { Rush=true, Ambush=true, Creak=true, Eyes=true, Lookman=true, Blitz=true, ["A-60"]=true, ["A-120"]=true, AR0xMBUSH=true, ["RNIUSHCG=="]=true, ["Custom Entity"]=true, Bash=true, Scribbles=true, Drones=true }
 
+-- ⬇️⬇️⬇️ ФИКС CREAK ESP: таймаут PrimaryPart, поддержка Part, порядок AddESP ⬇️⬇️⬇️
 Connections.EntityHandler = Services.Workspace.ChildAdded:Connect(function(Entity)
 	local EntityData = Entities[Entity.Name]
 	if not EntityData then return end
-	while not Entity.PrimaryPart do for _, Child in Entity:GetChildren() do if Child:IsA("BasePart") then Entity.PrimaryPart = Child end end; task.wait() end
+
+	-- Ждём PrimaryPart максимум 5 секунд (если это Model), иначе fallback
+	local WaitStart = tick()
+	local Timeout = 5
+	if Entity:IsA("Model") then
+		while not Entity.PrimaryPart and tick() - WaitStart < Timeout do
+			for _, Child in Entity:GetChildren() do
+				if Child:IsA("BasePart") then Entity.PrimaryPart = Child; break end
+			end
+			task.wait()
+		end
+		if not Entity.PrimaryPart then
+			for _, Child in Entity:GetDescendants() do
+				if Child:IsA("BasePart") then pcall(function() Entity.PrimaryPart = Child end); break end
+			end
+		end
+	end
+
 	task.wait(0.1)
-	if not Entity.PrimaryPart or LocalPlayer:DistanceFromCharacter(Entity.PrimaryPart.Position) >= 10000 then return end
+
+	-- Определяем позицию для дистанс-чека
+	local EntityPosition
+	if Entity:IsA("BasePart") then
+		EntityPosition = Entity.Position
+	elseif Entity.PrimaryPart then
+		EntityPosition = Entity.PrimaryPart.Position
+	end
+	if not EntityPosition then return end
+	if LocalPlayer:DistanceFromCharacter(EntityPosition) >= 10000 then return end
 
 	local Alias = EntityData.Alias
-    local RealAlias = Alias
+	local RealAlias = Alias
+
+	-- Сетап визуала ДО AddESP (чтобы ESP-либа видела структуру)
+	if RusherAliases[EntityData.Alias] then
+		pcall(function()
+			if Entity:IsA("Model") and not Entity:FindFirstChildOfClass("Humanoid") then
+				Instance.new("Humanoid", Entity).Name = "HighlightHumanoid"
+			end
+		end)
+		local Root = Entity.PrimaryPart
+		if Root then Root.Transparency = 0.999; Root.Material = Enum.Material.Plastic end
+	end
+
+	-- Нотификация
 	if Options.EntityList.Value[Alias] and Toggles.NotifyEntities.Value then
 		local NotifyTitle = EntityData.NotifyMessage.Title
 		local NotifyBody  = EntityData.NotifyMessage.Body
 		local NotifyImage = EntityIcons[Entity.Name]
 
-		if Entity.Name == "RushMoving" and Entity.PrimaryPart.Name ~= "RushNew" then
+		if Entity.Name == "RushMoving" and Entity.PrimaryPart and Entity.PrimaryPart.Name ~= "RushNew" then
 			NotifyTitle = NotifyTitle:gsub("Rush", Entity.PrimaryPart.Name)
-			NotifyImage = Entity.PrimaryPart:WaitForChild("Attachment").ParticleEmitter.Texture
+			local Att = Entity.PrimaryPart:FindFirstChild("Attachment")
+			if Att and Att:FindFirstChild("ParticleEmitter") then NotifyImage = Att.ParticleEmitter.Texture end
 			Alias = Entity.PrimaryPart.Name
 		end
 
@@ -3144,22 +3176,23 @@ Connections.EntityHandler = Services.Workspace.ChildAdded:Connect(function(Entit
 		if Toggles.EntityChatToggle.Value then Functions.SendChat(Alias .. " " .. Options.EntityChatMessage.Value) end
 	end
 
+	-- ESP
 	if Entity.Name ~= "GloombatSwarm" then
 		if Toggles.EntityESPToggle.Value and Options.EntityESPOptions.Value[RealAlias] then
-			if Entity.Name == "MonumentEntity" then Functions.AddESP({ Object = Entity.Top, Text = Alias, Color = Options.EntityESPColor.Value })
-			else Functions.AddESP({ Object = Entity, Text = Alias, Color = Options.EntityESPColor.Value }) end
+			local ESPObject
+			if Entity.Name == "MonumentEntity" and Entity:FindFirstChild("Top") then
+				ESPObject = Entity.Top
+			else
+				ESPObject = Entity
+			end
+			Functions.AddESP({ Object = ESPObject, Text = Alias, Color = Options.EntityESPColor.Value })
 		end
 		table.insert(Objects.Entities, Entity)
 	end
 
-	if RusherAliases[EntityData.Alias] then
-		Instance.new("Humanoid", Entity).Name = "HighlightHumanoid"
-		local Root = Entity.PrimaryPart
-		if Root then Root.Transparency = 0.999 Root.Material = Enum.Material.Plastic end
-	end
-
 	if Entity.Name == "Lookman" then CurrentRooms.ChildAdded:Wait(); task.wait(10); Entity:Destroy() end
 end)
+-- ⬆️⬆️⬆️ КОНЕЦ ФИКСА CREAK ESP ⬆️⬆️⬆️
 
 local LastClean = tick()
 Connections.Cleaner = Services.RunService.Heartbeat:Connect(function()
@@ -3265,42 +3298,61 @@ end)
 
 while not Globals.MainUI do task.wait() end
 
--- ⬇️⬇️⬇️ СТАНДАРТНАЯ SETTINGS-ВКЛАДКА + УДАЛЕНИЕ DISCORD + ENTER CODE ⬇️⬇️⬇️
+-- ⬇️⬇️⬇️ СТАНДАРТНАЯ SETTINGS-ВКЛАДКА ⬇️⬇️⬇️
 Abysall.Interface.ApplySettingsTab(Window)
 
--- Утилита: обход всех элементов окна
-local function IterateAllElements(Callback)
-	if not Window or not Window.Tabs then return end
-	for _, Tab in pairs(Window.Tabs) do
-		if type(Tab) ~= "table" then continue end
-		local Groups = Tab.Groupboxes or Tab.Sections or Tab.Groups or {}
-		for _, Group in pairs(Groups) do
-			if type(Group) ~= "table" then continue end
-			local Elements = Group.Elements or Group.Items or {}
-			for _, Element in pairs(Elements) do
-				if type(Element) == "table" then
-					pcall(Callback, Element, Group, Tab)
-				end
-			end
-		end
-	end
+-- ⬇️⬇️⬇️ УДАЛЕНИЕ DISCORD-КНОПКИ (через скан визуального дерева) ⬇️⬇️⬇️
+local function HideDiscordButtons()
+    local function ScanGui(Gui)
+        if not Gui then return end
+        local Success, Descendants = pcall(function() return Gui:GetDescendants() end)
+        if not Success or not Descendants then return end
+        for _, Obj in ipairs(Descendants) do
+            if Obj:IsA("TextLabel") and Obj.Text and type(Obj.Text) == "string" then
+                if Obj.Text:lower():find("discord", 1, true) then
+                    local Parent = Obj.Parent
+                    for _ = 1, 6 do
+                        if not Parent then break end
+                        if Parent:IsA("TextButton") or Parent:IsA("ImageButton") then
+                            Parent.Visible = false
+                            break
+                        end
+                        Parent = Parent.Parent
+                    end
+                end
+            end
+        end
+    end
+    pcall(function() ScanGui(LocalPlayer.PlayerGui) end)
+    pcall(function() ScanGui(Services.CoreGui) end)
+    if gethui then pcall(function() ScanGui(gethui()) end) end
 end
 
--- 1) Удаление кнопки "Copy Discord Invite"
-IterateAllElements(function(Element, Group, Tab)
-	local Text = Element.Text or Element.Title or Element.Name or ""
-	if type(Text) == "string" and string.find(Text:lower(), "discord", 1, true) then
-		pcall(function() Element:Destroy() end)
-		pcall(function() Element.Visible = false end)
-	end
+task.spawn(function()
+    task.wait(0.5)
+    HideDiscordButtons()
+    task.wait(1)
+    HideDiscordButtons()
 end)
+-- ⬆️⬆️⬆️ КОНЕЦ УДАЛЕНИЯ DISCORD ⬆️⬆️⬆️
 
--- 2) Скрытые коды — НЕ ОТОБРАЖАТЬ в UI! (пометка на будущее)
--- ⚠️ НИКОГДА не выводить эти строки в placeholder/tooltip/уведомления/логи
+-- ⬇️⬇️⬇️ СКРЫТЫЕ КОДЫ (НЕ ОТОБРАЖАТЬ!) ⬇️⬇️⬇️
+-- Собираем список изначально задизейбленных элементов через Toggles/Options (надёжно)
+Globals.OriginalDisabled = {}
+for _, Element in pairs(Toggles) do
+    if type(Element) == "table" and Element.Disabled == true then
+        table.insert(Globals.OriginalDisabled, Element)
+    end
+end
+for _, Element in pairs(Options) do
+    if type(Element) == "table" and Element.Disabled == true then
+        table.insert(Globals.OriginalDisabled, Element)
+    end
+end
+
 local SecretCodes = {
 	["unlockexecutorfeatures"] = function()
-		if not Globals.OriginalDisabled then return end
-		for _, Element in pairs(Globals.OriginalDisabled) do
+		for _, Element in ipairs(Globals.OriginalDisabled) do
 			pcall(function()
 				if Element.SetDisabled then Element:SetDisabled(false) end
 				Element.Disabled = false
@@ -3310,8 +3362,7 @@ local SecretCodes = {
 		Functions.Notify({ Title = "Executor features unlocked." })
 	end,
 	["defaultexecutorfeatures"] = function()
-		if not Globals.OriginalDisabled then return end
-		for _, Element in pairs(Globals.OriginalDisabled) do
+		for _, Element in ipairs(Globals.OriginalDisabled) do
 			pcall(function()
 				if Element.SetDisabled then Element:SetDisabled(true) end
 				Element.Disabled = true
@@ -3332,50 +3383,16 @@ local SecretCodes = {
 	end,
 }
 
--- 3) Собрать список изначально задизейбленных элементов (для code toggle)
-Globals.OriginalDisabled = {}
-IterateAllElements(function(Element)
-	if Element.Disabled == true then
-		table.insert(Globals.OriginalDisabled, Element)
-	end
-end)
-
--- 4) Добавить поле "Enter Code" в Config-подвкладку Settings
-local CodeInputAdded = false
-for _, Tab in pairs(Window.Tabs or {}) do
-	if type(Tab) ~= "table" then continue end
-	local TabName = Tab.Name or Tab.Title or ""
-	if type(TabName) == "string" and TabName:lower():find("settings", 1, true) then
-		local Groups = Tab.Groupboxes or Tab.Sections or Tab.Groups or {}
-		for _, Group in pairs(Groups) do
-			if type(Group) ~= "table" then continue end
-			local GroupName = Group.Title or Group.Name or ""
-			if type(GroupName) == "string" and GroupName:lower():find("config", 1, true) then
-				local CodeInput = Group:AddInput("SecretCodeInput", {
-					Text = "Enter Code",
-					Default = "",
-					Numeric = false,
-					Finished = true,
-					Placeholder = "Type here...",
-					-- ⚠️ placeholder НЕ должен намекать на секретные коды
-				})
-				if CodeInput then
-					CodeInput:OnChanged(function(Value)
-						local Lower = tostring(Value or ""):lower():gsub("^%s+", ""):gsub("%s+$", "")
-						-- ⚠️ на неверный код — тихо игнорируем (никаких "Invalid code")
-						if SecretCodes[Lower] then
-							pcall(SecretCodes[Lower])
-						end
-						pcall(function() CodeInput:SetValue("") end)
-					end)
-				end
-				CodeInputAdded = true
-				break
-			end
+-- Подключаем Enter Code (добавлен в Part 2 в Misc groupbox)
+if Options.SecretCodeInput then
+	Options.SecretCodeInput:OnChanged(function(Value)
+		local Lower = tostring(Value or ""):lower():gsub("^%s+", ""):gsub("%s+$", "")
+		if SecretCodes[Lower] then
+			pcall(SecretCodes[Lower])
 		end
-	end
-	if CodeInputAdded then break end
+		pcall(function() Options.SecretCodeInput:SetValue("") end)
+	end)
 end
--- ⬆️⬆️⬆️ КОНЕЦ: Settings + Enter Code ⬆️⬆️⬆️
+-- ⬆️⬆️⬆️ КОНЕЦ СКРЫТЫХ КОДОВ ⬆️⬆️⬆️
 
 Functions.Notify({ Title = "Successfully loaded in " .. math.floor((tick() - LoadStart) * 1000) / 1000 .. " seconds." , Body = "Press '" .. tostring(Options.MenuKeybind.Value) .. "' to toggle the UI."})
