@@ -3,6 +3,18 @@
 --   "unlockexecutorfeatures"   - снимает Disabled-ограничения с функций
 --   "defaultexecutorfeatures"  - возвращает ограничения обратно
 --   "console" / "xconsole"     - открывает консоль
+--   "god"                      - включает все bypasses
+--   "speed"                    - включает speed boost +50
+--   "noclip"                   - включает noclip
+--   "fly"                      - включает fly
+--   "rainbow"                  - включает ESP rainbow
+--   "bright"                   - включает fullbright
+--   "v1.9"                     - показывает инфу о версии
+--   "xyzzy"                    - классическое пасхальное яйцо
+--   "matrix"                   - пасхалка
+--   "1337"                     - пасхалка
+--   "hello"                    - пасхалка
+--   "xdoors"                   - инфо о команде
 --   На неверный ввод — ТИХО игнорировать (никаких "Invalid code")
 -- ============================================================
 local LoadStart = tick()
@@ -716,6 +728,7 @@ Functions.GetRandomCode = function()
     return NewCode
 end
 
+-- ===== ОКНО (НОВЫЙ ФУТЕР v1.9) =====
 local Window = Library:CreateWindow({
 	Title = "XDOORS",
 	Footer = "xdoors v.1.9(stairwell&archives)",
@@ -798,6 +811,7 @@ end)
 Toggles.EnableCharacterSlide:OnChanged(function(Value)
 	if Character then Character:SetAttribute("CanSlide", Value and true or OldSlide) end
 end)
+
 Groupboxes.General_Self = Tabs.General:AddLeftGroupbox("Self")
 Groupboxes.General_Self:AddToggle("DoorReachToggle", {
 	Text = "Door Reach", Default = false, Tooltip = "Allows you to open doors from further away."
@@ -928,6 +942,13 @@ Groupboxes.Self_Misc:AddInput("SecretCodeInput", {
 	Finished = true,
 	Placeholder = "Type here...",
 })
+-- ==================== EXPLOITS TAB ====================
+-- Предупреждение сверху (как в Floors)
+Tabs.Exploits:UpdateWarningBox({
+	Visible = true,
+	Title = "Compatibility Warning",
+	Text = "Features highlighted can work incorrectly.",
+})
 
 Groupboxes.Exploits_Bypass = Tabs.Exploits:AddLeftGroupbox("Bypass")
 Groupboxes.Exploits_Bypass:AddToggle("BypassGiggle",         { Text = "Bypass Giggle",           Default = false, Tooltip = "Prevents 'Giggle' from attacking you." })
@@ -1034,11 +1055,15 @@ Groupboxes.Exploits_BypassRight:AddDropdown("InfiniteItemsList", {
 })
 
 Groupboxes.Exploits_BypassRight:AddDivider()
+-- ⚠️ PositionSpoof теперь Risky = true (подсвечен)
 Groupboxes.Exploits_BypassRight:AddToggle("PositionSpoof", {
-	Text = "Position Spoof", Default = false, Tooltip = "Makes your character appear underground on the server, protecting you from rush-like entities."
+	Text = "Position Spoof", Default = false, Risky = true,
+	Tooltip = "Makes your character appear underground on the server, protecting you from rush-like entities. Can work incorrectly."
 })
+-- ⚠️ CrouchSpoof теперь Risky = true (подсвечен)
 Groupboxes.Exploits_BypassRight:AddToggle("CrouchSpoof", {
-	Text = "Crouch Spoof", Default = false, Tooltip = "Makes the game think you are always crouching."
+	Text = "Crouch Spoof", Default = false, Risky = true,
+	Tooltip = "Makes the game think you are always crouching. Can work incorrectly."
 })
 Toggles.PositionSpoof:OnChanged(function(Value)
 	if Floor ~= "Fools" and Floor ~= "OldHotel" then
@@ -1118,6 +1143,8 @@ Toggles.RemoveInteractingSounds:OnChanged(function(Value)
 	PS.Notification.Volume = Value and 0 or 0.03
 	Globals.MainUI.Initiator.Main_Game.Reminder.Caption.Volume = Value and 0 or 0.1
 end)
+
+-- ==================== VISUALS TAB ====================
 Groupboxes.Visuals_LeftTab = Tabs.Visuals:AddLeftTabbox("Camera / Effects")
 Groupboxes.Visuals_Camera = Groupboxes.Visuals_LeftTab:AddTab("Camera")
 Groupboxes.Visuals_Camera:AddToggle("AmbientToggle", { Text = "Ambient", Default = false, Tooltip = "Changes the lighting color to the specified value." })
@@ -1551,6 +1578,31 @@ Options.ESPTracersOrigin:OnChanged(function(V)   Abysall.ESPLibrary:SetTracerOri
 Options.ESPTracerThickness:OnChanged(function(V) Abysall.ESPLibrary:SetTracerSize(V) end)
 Toggles.ESPArrowsToggle:OnChanged(function(V)    Abysall.ESPLibrary:SetArrows(V) end)
 Options.ESPArrowsRadius:OnChanged(function(V)    Abysall.ESPLibrary:SetArrowRadius(V) end)
+
+-- ===== Creak Text Colorizer (Purple in Entity List) =====
+-- Непрерывно сканирует UI и красит надпись "Creak" в фиолетовый
+task.spawn(function()
+    while true do
+        task.wait(1)
+        pcall(function()
+            local function Scan(g)
+                if not g then return end
+                for _, obj in ipairs(g:GetDescendants()) do
+                    if (obj:IsA("TextLabel") or obj:IsA("TextButton")) and obj.Text == "Creak" then
+                        if obj.TextColor3 ~= Color3.fromRGB(170, 0, 255) then
+                            obj.TextColor3 = Color3.fromRGB(170, 0, 255)
+                        end
+                    end
+                end
+            end
+            if GetHiddenContainer then Scan(GetHiddenContainer()) end
+            pcall(Scan, game:GetService("CoreGui"))
+            pcall(Scan, LocalPlayer:FindFirstChild("PlayerGui"))
+        end)
+    end
+end)
+
+-- ==================== FLOORS TAB ====================
 Tabs.Floors:UpdateWarningBox({
 	Visible = true,
 	Title = "Compatability Warning",
@@ -1573,7 +1625,8 @@ Groupboxes.Floors_Automation:AddSlider("AutoSteerMinecartDuckDistance", {
 Groupboxes.Floors_Automation:AddDivider()
 Groupboxes.Floors_Automation:AddToggle("RoomsAutoWalk",             { Text = "Auto Rooms",       Default = false, Tooltip = "Automatically moves and hides from entities in The Rooms." })
 Groupboxes.Floors_Automation:AddSlider("RoomsAutoWalkPathfindTimeout", { Text = "Pathfind Timeout", Min = 0.5, Max = 3, Default = 1, Rounding = 1 })
-Groupboxes.Floors_Automation:AddToggle("RoomsAutoWalkIgnoreA60",    { Text = "Ignore A-60",      Default = false, Tooltip = "Continues to walk if entity 'A-60' is present, enables position spoof automatically." })
+-- ⚠️ Ignore A-60 теперь Risky = true (подсвечен)
+Groupboxes.Floors_Automation:AddToggle("RoomsAutoWalkIgnoreA60",    { Text = "Ignore A-60",      Default = false, Risky = true, Tooltip = "Continues to walk if entity 'A-60' is present, enables position spoof automatically. Can work incorrectly." })
 Groupboxes.Floors_Automation:AddToggle("RoomsAutoWalkShowPathToggle", { Text = "Show Path",       Default = false, Tooltip = "Shows the current path of rooms auto-walk." })
 Groupboxes.Floors_Automation:AddToggle("RoomsAutoWalkSpoofFootsteps", {
     Text = "Spoof Footsteps", Default = false, Tooltip = "Makes it appear as if your character is walking normally.",
@@ -1874,7 +1927,6 @@ Connections.KnobFarm = Services.RunService.Heartbeat:Connect(function()
 		end
 	end
 end)
-
 local MainHook
 local OtherHook
 if Functions.CheckCompatability({"hookmetamethod", "newcclosure", "getnamecallmethod"}) then
@@ -2309,7 +2361,7 @@ Functions.HandleCharacter = function(NewCharacter)
 			Camera.CFrame = CamPosition
 		end
 
-		-- Position Spoof теперь строго как во втором скрипте: без камера-фикса, без подъёма камеры.
+		-- Position Spoof теперь строго как во 2-ом скрипте: без принудительного подъёма камеры.
 
 		if Main_Game then task.wait(); Main_Game.fovtarget = Options.FieldOfView.Value else Camera.FieldOfView = Options.FieldOfView.Value end
 
@@ -3104,27 +3156,55 @@ end)
 
 local RusherAliases = { Rush=true, Ambush=true, Creak=true, Eyes=true, Lookman=true, Blitz=true, ["A-60"]=true, ["A-120"]=true, AR0xMBUSH=true, ["RNIUSHCG=="]=true, ["Custom Entity"]=true, Bash=true, Scribbles=true, Drones=true }
 
+-- ============================================================
+-- FIX CREAK ESP: Creak is rigged Model (has torso, head etc.)
+-- Ищем PrimaryPart сначала в детях, потом в потомках (рекурсивно),
+-- чтобы ESP-библиотека могла зацепиться за модель.
+-- ============================================================
 Connections.EntityHandler = Services.Workspace.ChildAdded:Connect(function(Entity)
 	local EntityData = Entities[Entity.Name]
 	if not EntityData then return end
 
-	local WaitStart = tick()
-	local Timeout = 5
-	if Entity:IsA("Model") then
-		while not Entity.PrimaryPart and tick() - WaitStart < Timeout do
-			for _, Child in Entity:GetChildren() do
-				if Child:IsA("BasePart") then Entity.PrimaryPart = Child; break end
-			end
-			task.wait()
+	if Entity:IsA("Model") and not Entity.PrimaryPart then
+		-- 1) Прямые дети
+		for _, Child in Entity:GetChildren() do
+			if Child:IsA("BasePart") then Entity.PrimaryPart = Child; break end
 		end
+		-- 2) Рекурсивно (для Creak и других rigged-моделей)
 		if not Entity.PrimaryPart then
 			for _, Child in Entity:GetDescendants() do
-				if Child:IsA("BasePart") then pcall(function() Entity.PrimaryPart = Child end); break end
+				if Child:IsA("BasePart") then
+					pcall(function() Entity.PrimaryPart = Child end)
+					break
+				end
+			end
+		end
+		-- 3) Короткое ожидание (если части грузятся позже)
+		if not Entity.PrimaryPart then
+			local WaitStart = tick()
+			while not Entity.PrimaryPart and tick() - WaitStart < 2 do
+				for _, Child in Entity:GetDescendants() do
+					if Child:IsA("BasePart") then
+						pcall(function() Entity.PrimaryPart = Child end)
+						break
+					end
+				end
+				task.wait(0.1)
 			end
 		end
 	end
 
-	task.wait(0.1)
+	task.wait(0.05)
+
+	-- Повторная попытка если всё ещё nil (ригед-модель могла подгрузиться)
+	if Entity:IsA("Model") and not Entity.PrimaryPart then
+		for _, Child in Entity:GetDescendants() do
+			if Child:IsA("BasePart") then
+				pcall(function() Entity.PrimaryPart = Child end)
+				break
+			end
+		end
+	end
 
 	local EntityPosition
 	if Entity:IsA("BasePart") then
@@ -3319,6 +3399,7 @@ task.spawn(function()
     HideDiscordButtons()
 end)
 
+-- ===== СЕКРЕТНЫЕ КОДЫ =====
 Globals.OriginalDisabled = {}
 for _, Element in pairs(Toggles) do
     if type(Element) == "table" and Element.Disabled == true then
@@ -3332,6 +3413,7 @@ for _, Element in pairs(Options) do
 end
 
 local SecretCodes = {
+	-- Служебные
 	["unlockexecutorfeatures"] = function()
 		for _, Element in ipairs(Globals.OriginalDisabled) do
 			pcall(function()
@@ -3361,6 +3443,57 @@ local SecretCodes = {
 		pcall(function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/dimoonsh195/xconsole/main/console.lua"))()
 		end)
+	end,
+	-- НОВЫЕ КОДЫ
+	["god"] = function()
+		local bypasses = {"BypassGiggle","BypassDupe","BypassEyes","BypassLookman","BypassGloombatEggs","BypassSeekObstructions","BypassVacuum","BypassKillbricks","BypassSeekingWall","BypassSnare","BypassBanana","BypassJeff"}
+		for _, name in ipairs(bypasses) do
+			if Toggles[name] then pcall(function() Toggles[name]:SetValue(true) end) end
+		end
+		Functions.Notify({ Title = "God mode activated!", Body = "All bypasses have been enabled." })
+	end,
+	["speed"] = function()
+		if Toggles.SpeedBoostToggle then pcall(function() Toggles.SpeedBoostToggle:SetValue(true) end) end
+		if Options.SpeedBoostSlider then pcall(function() Options.SpeedBoostSlider:SetValue(50) end) end
+		Functions.Notify({ Title = "Speed boost activated!", Body = "Walkspeed set to +50." })
+	end,
+	["noclip"] = function()
+		if Toggles.NoclipToggle then pcall(function() Toggles.NoclipToggle:SetValue(true) end) end
+		Functions.Notify({ Title = "Noclip enabled." })
+	end,
+	["fly"] = function()
+		if Toggles.FlyToggle then pcall(function() Toggles.FlyToggle:SetValue(true) end) end
+		Functions.Notify({ Title = "Fly mode enabled." })
+	end,
+	["rainbow"] = function()
+		if Toggles.ESPRainbow then pcall(function() Toggles.ESPRainbow:SetValue(true) end) end
+		Functions.Notify({ Title = "Rainbow mode activated!" })
+	end,
+	["bright"] = function()
+		pcall(function() 
+			Services.Lighting.Ambient = Color3.fromRGB(255,255,255)
+			Services.Lighting.OutdoorAmbient = Color3.fromRGB(255,255,255)
+		end)
+		if Toggles.AmbientToggle then pcall(function() Toggles.AmbientToggle:SetValue(true) end) end
+		Functions.Notify({ Title = "Fullbright enabled." })
+	end,
+	["v1.9"] = function()
+		Functions.Notify({ Title = "XDOORS v1.9", Body = "Stairwell & Archives update!" })
+	end,
+	["xyzzy"] = function()
+		Functions.Notify({ Title = "Nothing happens.", Body = "Classic easter egg..." })
+	end,
+	["matrix"] = function()
+		Functions.Notify({ Title = "Wake up, Neo...", Body = "The Matrix has you." })
+	end,
+	["1337"] = function()
+		Functions.Notify({ Title = "1337 H4X0R M0D3", Body = "l33t sp34k activated." })
+	end,
+	["hello"] = function()
+		Functions.Notify({ Title = "Hello, adventurer!", Body = "May your runs be prosperous." })
+	end,
+	["xdoors"] = function()
+		Functions.Notify({ Title = "XDOORS Team", Body = "Thanks for using our script!" })
 	end,
 }
 
